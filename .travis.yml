@@ -18,7 +18,6 @@ r_packages:
 
 before_install:
 - bash travis/make.sh
-- bash travis/pkgdownundocumented.sh
 
 after_success:
 - Rscript -e 'library(covr); codecov()'
