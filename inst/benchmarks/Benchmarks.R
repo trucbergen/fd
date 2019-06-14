@@ -10,6 +10,49 @@ d <- expand.grid(
 setDT(d)
 setkeyv(d,c("tag","location"))
 
+d_file <- fs::path(tempdir(),"d.RDS")
+saveRDS(d, file=d_file)
+
+db <- DBI::dbConnect(RMariaDB::MariaDB(),
+                     host = "db",
+                     port = 3306,
+                     user = "root",
+                     password = "example"
+)
+RMariaDB::dbExecute(db, "USE test")
+
+
+
+a1 <- schema(
+  dt = d,
+  db = db,
+  db_table = "d",
+  keys = c("tag","location","date")
+)
+a1$get_data()
+
+a2 <- schema(
+  db = db,
+  db_table = "d",
+  keys = c("tag","location","date")
+)
+microbenchmark::microbenchmark({
+  a2$upload_data_db(d)
+},times=1)
+
+
+
+microbenchmark::microbenchmark({
+  pd <- a1$get_data(tag == "tag0" & location == "municip0400")
+}, times=20, unit="ms")
+
+microbenchmark::microbenchmark({
+  pd <- a2$get_data(tag == "tag0" & location == "municip0400")
+}, times=20, unit="ms")
+
+a2$add_index_db()
+
+
 db <- RMariaDB::dbConnect(RMariaDB::MariaDB(),
                           host = "db",
                           port = 3306,
@@ -46,6 +89,11 @@ microbenchmark::microbenchmark({
 
 microbenchmark::microbenchmark({
   pd <- d[.("tag0","municip0400")]
+}, times=20, unit="ms")
+
+microbenchmark::microbenchmark({
+  x <- readRDS(d_file)
+  pd <- x[.("tag0","municip0400")]
 }, times=20, unit="ms")
 
 
