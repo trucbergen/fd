@@ -15,9 +15,9 @@ schema <- setRefClass("schema",
     initialize = function(...) {
       callSuper(...)
 
-      if(nchar(.self$db_table) > 0){
+      if (nchar(.self$db_table) > 0) {
         if (!DBI::dbExistsTable(.self$db, .self$db_table)) {
-          #{.self$db_table} does not exist
+          # {.self$db_table} does not exist
           .self$upload_empty_db(.self$dt)
         }
       }
@@ -38,7 +38,7 @@ schema <- setRefClass("schema",
       if (sum(!params %in% keys)) {
         stop("names(...) not in keys")
       }
-      if (nrow(.self$dt)>0 | ncol(.self$dt)>0) {
+      if (nrow(.self$dt) > 0 | ncol(.self$dt) > 0) {
         x <- .self$get_data_dt(...)
       } else {
         x <- .self$get_data_db(...)
@@ -64,13 +64,13 @@ schema <- setRefClass("schema",
         dplyr::tbl(db_table) %>%
         dplyr::filter(!!!dots) %>%
         dplyr::collect()
-       setDT(retval)
+      setDT(retval)
       return(retval)
     },
 
-    upload_empty_db = function(skeleton){
-      empty <- skeleton[1,]
-      empty <- empty[-1,]
+    upload_empty_db = function(skeleton) {
+      empty <- skeleton[1, ]
+      empty <- empty[-1, ]
       .self$upload_data_db(empty)
     },
 
