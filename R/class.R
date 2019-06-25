@@ -2,6 +2,7 @@
 #'
 #' @importFrom methods new
 #' @import RMariaDB
+#' @export schema
 #' @exportClass schema
 schema <- setRefClass("schema",
   fields = list(
