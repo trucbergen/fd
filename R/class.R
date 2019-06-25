@@ -14,6 +14,13 @@ schema <- setRefClass("schema",
   methods = list(
     initialize = function(...) {
       callSuper(...)
+
+      if(nchar(.self$db_table) > 0){
+        if (!DBI::dbExistsTable(.self$db, .self$db_table)) {
+          #{.self$db_table} does not exist
+          .self$upload_empty_db(.self$dt)
+        }
+      }
     },
     get_data = function(...) {
       dots <- dplyr::quos(...)
@@ -57,8 +64,14 @@ schema <- setRefClass("schema",
         dplyr::tbl(db_table) %>%
         dplyr::filter(!!!dots) %>%
         dplyr::collect()
-      # setDT(retval)
+       setDT(retval)
       return(retval)
+    },
+
+    upload_empty_db = function(skeleton){
+      empty <- skeleton[1,]
+      empty <- empty[-1,]
+      .self$upload_data_db(empty)
     },
 
     drop_data_db = function(db_table_to_drop = NULL) {
@@ -84,7 +97,7 @@ schema <- setRefClass("schema",
 
       .self$drop_data_db(todelete)
     },
-    upload_data_db = function(newdata) {
+    drop_all_and_upload_data_db = function(newdata) {
       .self$drop_data_db()
 
       DBI::dbWriteTable(
@@ -93,12 +106,18 @@ schema <- setRefClass("schema",
         newdata
       )
     },
-    replace_data_db = function(newdata) {
+    drop_matching_and_append_data_db = function(newdata) {
       if (!DBI::dbExistsTable(.self$db, .self$db_table)) {
-        stop(glue::glue("{.self$db_table} does not exist"))
+        warning(glue::glue("{.self$db_table} does not exist"))
+        DBI::dbWriteTable(
+          .self$db,
+          .self$db_table,
+          newdata
+        )
+      } else {
+        .self$delete_data_db(newdata)
+        DBI::dbAppendTable(db, .self$db_table, newdata)
       }
-      .self$delete_data_db(newdata)
-      DBI::dbAppendTable(db, .self$db_table, newdata)
     },
     add_index_db = function() {
       txt <- glue::glue_collapse(glue::glue("`{.self$keys}`(20)"), sep = ",")
