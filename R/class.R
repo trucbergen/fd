@@ -32,13 +32,14 @@ schema <- setRefClass("schema",
         stop("names(...) not in keys")
       }
       if (nrow(.self$dt)>0 | ncol(.self$dt)>0) {
-        x <- .self$get_data_dt(dots)
+        x <- .self$get_data_dt(...)
       } else {
-        x <- .self$get_data_db(dots)
+        x <- .self$get_data_db(...)
       }
       return(x)
     },
-    get_data_dt = function(dots) {
+    get_data_dt = function(...) {
+      dots <- dplyr::quos(...)
       txt <- c()
       for (i in seq_along(dots)) {
         txt <- c(txt, rlang::quo_text(dots[[i]]))
@@ -50,7 +51,8 @@ schema <- setRefClass("schema",
         return(.self$dt[eval(parse(text = txt))])
       }
     },
-    get_data_db = function(dots) {
+    get_data_db = function(...) {
+      dots <- dplyr::quos(...)
       retval <- .self$db %>%
         dplyr::tbl(db_table) %>%
         dplyr::filter(!!!dots) %>%
