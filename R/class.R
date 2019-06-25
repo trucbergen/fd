@@ -19,7 +19,7 @@ schema <- setRefClass("schema",
       if (nchar(.self$db_table) > 0) {
         if (!DBI::dbExistsTable(.self$db, .self$db_table)) {
           # {.self$db_table} does not exist
-          if (!is.null(.self$dt)){
+          if (!is.null(.self$dt)) {
             message("initializing")
             .self$upload_empty_db(.self$dt)
           }
