@@ -69,8 +69,8 @@ schema <- setRefClass("schema",
       return(retval)
     },
 
-    upload_data_db = function(newdata){
-      newdata[,exists_in_db:=NULL]
+    upload_data_db = function(newdata) {
+      newdata[, exists_in_db := NULL]
       DBI::dbWriteTable(
         .self$db,
         .self$db_table,
@@ -78,9 +78,9 @@ schema <- setRefClass("schema",
       )
     },
 
-    upload_empty_db = function(skeleton){
-      empty <- skeleton[1,]
-      empty <- empty[-1,]
+    upload_empty_db = function(skeleton) {
+      empty <- skeleton[1, ]
+      empty <- empty[-1, ]
       .self$upload_data_db(empty)
     },
 
@@ -91,7 +91,7 @@ schema <- setRefClass("schema",
       }
     },
     drop_matching_data_db = function(newdata) {
-      newdata[,exists_in_db:=NULL]
+      newdata[, exists_in_db := NULL]
       todelete <- paste0("a", stringr::str_remove_all(uuid::UUIDgenerate(), "-"))
       DBI::dbWriteTable(
         .self$db,
@@ -114,7 +114,7 @@ schema <- setRefClass("schema",
       upload_data_db(newdata)
     },
     drop_matching_and_append_data_db = function(newdata) {
-      newdata[,exists_in_db:=NULL]
+      newdata[, exists_in_db := NULL]
       if (!DBI::dbExistsTable(.self$db, .self$db_table)) {
         warning(glue::glue("{.self$db_table} does not exist"))
         upload_data_db(newdata)
@@ -131,12 +131,12 @@ schema <- setRefClass("schema",
       )
     },
 
-    identify_dt_that_exists_in_db = function(){
-      setkeyv(.self$dt,.self$keys)
+    identify_dt_that_exists_in_db = function() {
+      setkeyv(.self$dt, .self$keys)
       from_db <- .self$get_data_db()
-      setkeyv(from_db,.self$keys)
-      .self$dt[,exists_in_db:=FALSE]
-      .self$dt[from_db,exists_in_db:=TRUE]
+      setkeyv(from_db, .self$keys)
+      .self$dt[, exists_in_db := FALSE]
+      .self$dt[from_db, exists_in_db := TRUE]
     }
   )
 )
