@@ -1,12 +1,12 @@
 #' schema class description
 #'
 #' @importFrom methods new
-#' @export schema
+#' @import RMariaDB
 #' @exportClass schema
 schema <- setRefClass("schema",
   fields = list(
     dt = "data.frame",
-    db = "vector",
+    db = "MariaDBConnection",
     db_table = "character",
     keys = "vector"
   ),
