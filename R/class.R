@@ -31,7 +31,7 @@ schema <- setRefClass("schema",
       if (sum(!params %in% keys)) {
         stop("names(...) not in keys")
       }
-      if (!is.null(nrow(.self$dt))){
+      if (nrow(.self$dt)>0 | ncol(.self$dt)>0) {
         x <- .self$get_data_dt(dots)
       } else {
         x <- .self$get_data_db(dots)
