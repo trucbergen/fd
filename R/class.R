@@ -2,11 +2,12 @@
 #'
 #' @importFrom methods new
 #' @import RMariaDB
+#' @import data.table
 #' @export schema
 #' @exportClass schema
 schema <- setRefClass("schema",
   fields = list(
-    dt = "data.frame",
+    dt = "data.table",
     db = "MariaDBConnection",
     db_table = "character",
     keys = "vector"
@@ -68,6 +69,15 @@ schema <- setRefClass("schema",
       return(retval)
     },
 
+    upload_data_db = function(newdata){
+      newdata[,exists_in_db:=NULL]
+      DBI::dbWriteTable(
+        .self$db,
+        .self$db_table,
+        newdata
+      )
+    },
+
     upload_empty_db = function(skeleton){
       empty <- skeleton[1,]
       empty <- empty[-1,]
@@ -80,7 +90,8 @@ schema <- setRefClass("schema",
         DBI::dbExecute(.self$db, DBI::SQL(glue::glue("DROP TABLE {db_table_to_drop}")))
       }
     },
-    delete_data_db = function(newdata) {
+    drop_matching_data_db = function(newdata) {
+      newdata[,exists_in_db:=NULL]
       todelete <- paste0("a", stringr::str_remove_all(uuid::UUIDgenerate(), "-"))
       DBI::dbWriteTable(
         .self$db,
@@ -100,22 +111,15 @@ schema <- setRefClass("schema",
     drop_all_and_upload_data_db = function(newdata) {
       .self$drop_data_db()
 
-      DBI::dbWriteTable(
-        .self$db,
-        .self$db_table,
-        newdata
-      )
+      upload_data_db(newdata)
     },
     drop_matching_and_append_data_db = function(newdata) {
+      newdata[,exists_in_db:=NULL]
       if (!DBI::dbExistsTable(.self$db, .self$db_table)) {
         warning(glue::glue("{.self$db_table} does not exist"))
-        DBI::dbWriteTable(
-          .self$db,
-          .self$db_table,
-          newdata
-        )
+        upload_data_db(newdata)
       } else {
-        .self$delete_data_db(newdata)
+        .self$drop_matching_data_db(newdata)
         DBI::dbAppendTable(db, .self$db_table, newdata)
       }
     },
@@ -125,6 +129,14 @@ schema <- setRefClass("schema",
         .self$db,
         glue::glue("ALTER TABLE `{.self$db_table}` ADD INDEX `ind1` ({txt})")
       )
+    },
+
+    identify_dt_that_exists_in_db = function(){
+      setkeyv(.self$dt,.self$keys)
+      from_db <- .self$get_data_db()
+      setkeyv(from_db,.self$keys)
+      .self$dt[,exists_in_db:=FALSE]
+      .self$dt[from_db,exists_in_db:=TRUE]
     }
   )
 )

@@ -3,4 +3,5 @@
 export(schema)
 exportClasses(schema)
 import(RMariaDB)
+import(data.table)
 importFrom(methods,new)
