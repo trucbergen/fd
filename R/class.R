@@ -21,10 +21,10 @@ schema <- R6Class("schema",
       self$db_load_file <- db_load_file
       self$keys <- keys
       self$keys_with_length <- keys
-      for(i in seq_along(self$keys_with_length)){
-        if(self$db_field_types[i]=="TEXT") self$keys_with_length[i] <- paste0(self$keys_with_length[i]," (10)")
-      }
 
+      ind <- self$db_field_types[self$keys]=="TEXT"
+      self$keys_with_length[ind] <- paste0(self$keys_with_length[ind], " (10)")
+      message(self$keys_with_length)
       self$db_create_table()
     },
     db_create_table = function(){
@@ -60,7 +60,7 @@ schema <- R6Class("schema",
       upsert_load_data_infile(
         conn=self$conn,
         table = self$db_table,
-        dt=newdata,
+        dt=newdata[,names(self$db_field_types),with=F],
         file = self$db_load_file,
         fields = names(self$db_field_types)
       )

@@ -42,6 +42,7 @@ load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv"){
 
 upsert_load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv", fields){
   if(DBI::dbExistsTable(conn, "temporary_table")) DBI::dbRemoveTable(conn, "temporary_table")
+
   sql <- glue::glue("CREATE TEMPORARY TABLE temporary_table LIKE {table};")
   DBI::dbExecute(conn, sql)
 
