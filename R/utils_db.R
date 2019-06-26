@@ -50,26 +50,26 @@ load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv") {
 }
 
 upsert_load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv", fields) {
-  if (DBI::dbExistsTable(conn, "temporary_table")) DBI::dbRemoveTable(conn, "temporary_table")
 
-  sql <- glue::glue("CREATE TEMPORARY TABLE temporary_table LIKE {table};")
+  temp_name <- paste0("a",round(runif(1,0,1000000)))
+  on.exit(DBI::dbRemoveTable(conn, temp_name))
+
+  sql <- glue::glue("CREATE TEMPORARY TABLE {temp_name} LIKE {table};")
   DBI::dbExecute(conn, sql)
 
   # TO SPEED UP EFFICIENCY DROP ALL INDEXES HERE
 
-  load_data_infile(conn = conn, "temporary_table", dt, file = file)
+  load_data_infile(conn = conn, temp_name, dt, file = file)
 
   vals_fields <- glue::glue_collapse(fields, sep = ", ")
   vals <- glue::glue("{fields} = VALUES({fields})")
   vals <- glue::glue_collapse(vals, sep = ", ")
 
   sql <- glue::glue("
-    INSERT INTO {table} SELECT {vals_fields} FROM temporary_table
+    INSERT INTO {table} SELECT {vals_fields} FROM {temp_name}
     ON DUPLICATE KEY UPDATE {vals};
     ")
   DBI::dbExecute(conn, sql)
-
-  if (DBI::dbExistsTable(conn, "temporary_table")) DBI::dbRemoveTable(conn, "temporary_table")
 }
 
 drop_all_rows <- function(conn, table) {
