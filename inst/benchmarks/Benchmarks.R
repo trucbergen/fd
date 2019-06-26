@@ -9,6 +9,75 @@ d <- expand.grid(
 )
 setDT(d)
 setkeyv(d,c("tag","location"))
+d[,n:=100]
+
+
+conn <- DBI::dbConnect(odbc::odbc(),
+                     driver="MySQL",
+                     server = "db",
+                     port = 3306,
+                     user = "root",
+                     password = "example"
+)
+
+use_db(conn, "sykdomspuls")
+
+field_types <- get_field_types(conn, d)
+
+s <- schema$new(
+  dt=d,
+  conn=conn,
+  db_table="x",
+  db_field_types=field_types,
+  db_load_file = "/xtmp/x123.csv",
+  keys=c("tag","location","date"))
+
+s$db_drop_all_rows()
+s$db_load_data_infile(s$dt[1:10])
+
+add_constraint(s$conn, s$db_table, s$keys_with_length)
+
+a <- s$get_data_db()
+
+DBI::dbRemoveTable(conn,"x")
+sql <- DBI::sqlCreateTable(conn, "x", field_types,
+                           row.names = F, temporary = F)
+DBI::dbExecute(conn, sql)
+
+DBI::ddbDataType()
+load_data_infile(conn, "x", d, file="/xtmp/x123.csv")
+
+a <- DBI::dbReadTable(conn, "x")
+
+f <- glue::glue("/xtmp/x123.csv")
+fwrite(d,file=f, logical01=T)
+
+sep = ","
+eol = "\n"
+quote = '"'
+skip = 0
+header = T
+path <- normalizePath(f, winslash = "/", mustWork = TRUE)
+sql <- paste0(
+  "LOAD DATA INFILE ", DBI::dbQuoteString(db, path), "\n",
+  "INTO TABLE ", DBI::dbQuoteIdentifier(db, "x"), "\n",
+  "FIELDS TERMINATED BY ", DBI::dbQuoteString(db, sep), "\n",
+  "OPTIONALLY ENCLOSED BY ", DBI::dbQuoteString(db, quote), "\n",
+  "LINES TERMINATED BY ", DBI::dbQuoteString(db, eol), "\n",
+  "IGNORE ", skip + as.integer(header), " LINES")
+microbenchmark::microbenchmark({
+  DBI::dbExecute(db, sql)
+},times = 1)
+
+a <- DBI::dbReadTable(db, "x")
+
+DBI::dbWriteTable(db, "x", res[1:10000], overwrite=T)
+
+microbenchmark::microbenchmark({
+  DBI::dbWriteTable(db, "x", res[1:400000], overwrite=T, row.names=F)
+},times = 1)
+
+
 
 d_file <- fs::path(tempdir(),"d.RDS")
 saveRDS(d, file=d_file)

@@ -14,8 +14,8 @@ Imports:
   rlang,
   stringr,
   DBI,
-  RMariaDB,
-  methods
+  methods,
+  R6
 Suggests: 
   testthat,
   knitr
