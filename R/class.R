@@ -13,7 +13,7 @@ schema <- R6Class("schema",
     db_load_file = NULL,
     keys = NULL,
     keys_with_length = NULL,
-    initialize = function(dt=NULL, conn=NULL, db_table, db_field_types, db_load_file, keys) {
+    initialize = function(dt = NULL, conn = NULL, db_table, db_field_types, db_load_file, keys) {
       self$dt <- dt
       self$conn <- conn
       self$db_table <- db_table
@@ -22,55 +22,56 @@ schema <- R6Class("schema",
       self$keys <- keys
       self$keys_with_length <- keys
 
-      ind <- self$db_field_types[self$keys]=="TEXT"
+      ind <- self$db_field_types[self$keys] == "TEXT"
       self$keys_with_length[ind] <- paste0(self$keys_with_length[ind], " (10)")
       message(self$keys_with_length)
 
-      if(!is.null(self$conn)) self$db_create_table()
+      if (!is.null(self$conn)) self$db_create_table()
     },
-    db_create_table = function(){
-      if(DBI::dbExistsTable(self$conn,self$db_table)){
+    db_create_table = function() {
+      if (DBI::dbExistsTable(self$conn, self$db_table)) {
         message(glue::glue("Table {self$db_table} exists"))
       } else {
         message(glue::glue("Creating table {self$db_table}"))
         sql <- DBI::sqlCreateTable(self$conn, self$db_table, self$db_field_types,
-                                   row.names = F, temporary = F)
+          row.names = F, temporary = F
+        )
         DBI::dbExecute(conn, sql)
         add_constraint(self$conn, self$db_table, self$keys_with_length)
       }
     },
-    db_drop_table = function(){
-      if(DBI::dbExistsTable(self$conn,self$db_table)){
+    db_drop_table = function() {
+      if (DBI::dbExistsTable(self$conn, self$db_table)) {
         DBI::dbRemoveTable(self$conn, self$db_table)
       }
     },
-    db_load_data_infile = function(newdata){
+    db_load_data_infile = function(newdata) {
       a <- Sys.time()
       load_data_infile(
-        conn=self$conn,
+        conn = self$conn,
         table = self$db_table,
-        dt=newdata,
+        dt = newdata,
         file = self$db_load_file
       )
       b <- Sys.time()
-      dif <- round(as.numeric(difftime(b,a,units="secs")),1)
+      dif <- round(as.numeric(difftime(b, a, units = "secs")), 1)
       message(glue::glue("Loaded {nrow(newdata)} rows in {dif} seconds"))
     },
-    db_upsert_load_data_infile = function(newdata){
+    db_upsert_load_data_infile = function(newdata) {
       a <- Sys.time()
       upsert_load_data_infile(
-        conn=self$conn,
+        conn = self$conn,
         table = self$db_table,
-        dt=newdata[,names(self$db_field_types),with=F],
+        dt = newdata[, names(self$db_field_types), with = F],
         file = self$db_load_file,
         fields = names(self$db_field_types)
       )
       b <- Sys.time()
-      dif <- round(as.numeric(difftime(b,a,units="secs")),1)
+      dif <- round(as.numeric(difftime(b, a, units = "secs")), 1)
       message(glue::glue("Loaded {nrow(newdata)} rows in {dif} seconds"))
     },
-    db_drop_all_rows = function(){
-      drop_all_rows(self$conn,self$db_table)
+    db_drop_all_rows = function() {
+      drop_all_rows(self$conn, self$db_table)
     },
     get_data = function(...) {
       dots <- dplyr::quos(...)
