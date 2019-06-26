@@ -23,7 +23,7 @@ schema <- R6Class("schema",
       self$keys_with_length <- keys
 
       ind <- self$db_field_types[self$keys] == "TEXT"
-      self$keys_with_length[ind] <- paste0(self$keys_with_length[ind], " (10)")
+      self$keys_with_length[ind] <- paste0(self$keys_with_length[ind], " (20)")
       message(self$keys_with_length)
 
       if (!is.null(self$conn)) self$db_create_table()
