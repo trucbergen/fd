@@ -13,7 +13,7 @@ schema <- R6Class("schema",
     db_load_file = NULL,
     keys = NULL,
     keys_with_length = NULL,
-    initialize = function(dt=NULL, conn, db_table, db_field_types, db_load_file, keys) {
+    initialize = function(dt=NULL, conn=NULL, db_table, db_field_types, db_load_file, keys) {
       self$dt <- dt
       self$conn <- conn
       self$db_table <- db_table
@@ -25,7 +25,8 @@ schema <- R6Class("schema",
       ind <- self$db_field_types[self$keys]=="TEXT"
       self$keys_with_length[ind] <- paste0(self$keys_with_length[ind], " (10)")
       message(self$keys_with_length)
-      self$db_create_table()
+
+      if(!is.null(self$conn)) self$db_create_table()
     },
     db_create_table = function(){
       if(DBI::dbExistsTable(self$conn,self$db_table)){
