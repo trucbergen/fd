@@ -25,8 +25,18 @@ schema <- R6Class("schema",
       ind <- self$db_field_types[self$keys] == "TEXT"
       self$keys_with_length[ind] <- paste0(self$keys_with_length[ind], " (20)")
       message(self$keys_with_length)
-
       if (!is.null(self$conn)) self$db_create_table()
+    },
+    db_connect = function(db_config){
+        self$conn <- get_db_connection(
+          driver = db_config$driver,
+          server = db_config$server,
+          port = db_config$port,
+          user = db_config$user,
+          password = db_config$password
+        )
+        fd:::use_db(self$conn, db_config$db)
+        
     },
     db_create_table = function() {
       if (DBI::dbExistsTable(self$conn, self$db_table)) {
@@ -36,7 +46,7 @@ schema <- R6Class("schema",
         sql <- DBI::sqlCreateTable(self$conn, self$db_table, self$db_field_types,
           row.names = F, temporary = F
         )
-        DBI::dbExecute(conn, sql)
+        DBI::dbExecute(self$conn, sql)
         add_constraint(self$conn, self$db_table, self$keys_with_length)
       }
     },
@@ -121,8 +131,8 @@ schema <- R6Class("schema",
 
     add_index_db = function() {
       txt <- glue::glue_collapse(glue::glue("`{self$keys}`(20)"), sep = ",")
-      RMariaDB::dbExecute(
-        self$db,
+      DBI::dbExecute(
+        self$conn,
         glue::glue("ALTER TABLE `{self$db_table}` ADD INDEX `ind1` ({txt})")
       )
     },
