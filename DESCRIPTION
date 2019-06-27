@@ -15,7 +15,8 @@ Imports:
   stringr,
   DBI,
   methods,
-  R6
+  R6,
+  magrittr
 Suggests: 
   testthat,
   knitr
