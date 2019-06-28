@@ -33,7 +33,9 @@ get_field_types <- function(conn, dt) {
 
 
 load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv") {
-  fwrite(dt, file = file, logical01 = T)
+  fwrite(dt, file = file,
+         logical01 = T,
+         na = "\\N")
 
   sep <- ","
   eol <- "\n"
@@ -41,15 +43,16 @@ load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv") {
   skip <- 0
   header <- T
   path <- normalizePath(file, winslash = "/", mustWork = TRUE)
+  
   sql <- paste0(
     "LOAD DATA INFILE ", DBI::dbQuoteString(conn, path), "\n",
     "INTO TABLE ", DBI::dbQuoteIdentifier(conn, table), "\n",
     "FIELDS TERMINATED BY ", DBI::dbQuoteString(conn, sep), "\n",
     "OPTIONALLY ENCLOSED BY ", DBI::dbQuoteString(conn, quote), "\n",
     "LINES TERMINATED BY ", DBI::dbQuoteString(conn, eol), "\n",
-    "IGNORE ", skip + as.integer(header), " LINES"
+    "IGNORE ", skip + as.integer(header), " LINES \n",
+    "(",  paste0(names(dt), collapse = ","), ")"
   )
-
   DBI::dbExecute(conn, sql)
 }
 
@@ -89,3 +92,17 @@ add_constraint <- function(conn, table, keys) {
   a <- DBI::dbExecute(conn, sql)
   # DBI::dbExecute(conn, "SHOW INDEX FROM x");
 }
+
+#' @export get_db_connection
+get_db_connection <- function(driver="MySQL",
+                              server="db",
+                              port=3306,
+                              user="root",
+                              password="example")
+  return(DBI::dbConnect(odbc::odbc(),
+                     driver = driver,
+                     server = server,
+                     port = port,
+                     user = user,
+                     password = password))
+  
