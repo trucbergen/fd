@@ -10,13 +10,14 @@ LazyData: true
 Imports: 
   data.table,
   glue,
-  dbplyr,
+  dplyr,
   rlang,
   stringr,
   DBI,
   methods,
   R6,
-  magrittr
+  magrittr,
+  stats
 Suggests: 
   testthat,
   knitr

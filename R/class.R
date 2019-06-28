@@ -1,7 +1,6 @@
 #' schema class description
 #'
 #' @import data.table
-#' @importFrom magrittr "%>%"
 #' @import R6
 #' @export schema
 #' @exportClass schema

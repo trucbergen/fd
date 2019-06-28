@@ -1,3 +1,7 @@
+#' @importFrom magrittr %>%
+#' @export
+magrittr::`%>%`
+
 #' use_db
 #' @param conn a
 #' @param db a
@@ -50,7 +54,7 @@ load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv") {
 }
 
 upsert_load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv", fields) {
-  temp_name <- paste0("a", round(runif(1, 0, 1000000)))
+  temp_name <- paste0("a", round(stats::runif(1, 0, 1000000)))
   on.exit(DBI::dbRemoveTable(conn, temp_name))
 
   sql <- glue::glue("CREATE TEMPORARY TABLE {temp_name} LIKE {table};")
