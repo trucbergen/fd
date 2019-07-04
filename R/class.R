@@ -8,26 +8,29 @@ schema <- R6Class("schema",
   public = list(
     dt = NULL,
     conn = NULL,
+    db_config = NULL,
     db_table = NULL,
     db_field_types = NULL,
-    db_load_file = NULL,
+    db_load_folder = NULL,
     keys = NULL,
     keys_with_length = NULL,
-    initialize = function(dt = NULL, conn = NULL, db_table, db_field_types, db_load_file, keys) {
+    table_in_use = future::future(FALSE),
+    initialize = function(dt = NULL, conn = NULL, db_config=NULL, db_table, db_field_types, db_load_folder, keys) {
       self$dt <- dt
       self$conn <- conn
+      self$db_config <- db_config
       self$db_table <- db_table
       self$db_field_types <- db_field_types
-      self$db_load_file <- db_load_file
+      self$db_load_folder <- db_load_folder
       self$keys <- keys
       self$keys_with_length <- keys
 
       ind <- self$db_field_types[self$keys] == "TEXT"
       self$keys_with_length[ind] <- paste0(self$keys_with_length[ind], " (20)")
-      message(self$keys_with_length)
       if (!is.null(self$conn)) self$db_create_table()
     },
-    db_connect = function(db_config){
+    db_connect = function(db_config=self$db_config){
+
         self$conn <- get_db_connection(
           driver = db_config$driver,
           server = db_config$server,
@@ -36,7 +39,8 @@ schema <- R6Class("schema",
           password = db_config$password
         )
         fd:::use_db(self$conn, db_config$db)
-        
+        self$db_create_table()
+
     },
     db_create_table = function() {
       if (DBI::dbExistsTable(self$conn, self$db_table)) {
@@ -56,26 +60,47 @@ schema <- R6Class("schema",
       }
     },
     db_load_data_infile = function(newdata) {
+      if(future::value(self$table_in_use)){
+        warning("Table in use")
+        return()
+      }
       a <- Sys.time()
-      load_data_infile(
+      infile <- random_file(self$db_load_folder)
+      write_data_infile(
+        dt = newdata,
+        file = infile
+      )
+      self$table_in_use <- future::future(load_data_infile(
         conn = self$conn,
         table = self$db_table,
-        dt = newdata,
-        file = self$db_load_file
-      )
+        dt = NULL,
+        file = infile
+      ), packages="fd")
       b <- Sys.time()
       dif <- round(as.numeric(difftime(b, a, units = "secs")), 1)
       message(glue::glue("Loaded {nrow(newdata)} rows in {dif} seconds"))
     },
     db_upsert_load_data_infile = function(newdata) {
+      if(future::value(self$table_in_use)){
+        warning("Table in use")
+        return()
+      }
       a <- Sys.time()
-      upsert_load_data_infile(
-        conn = self$conn,
-        table = self$db_table,
+      infile <- random_file(self$db_load_folder)
+      write_data_infile(
         dt = newdata[, names(self$db_field_types), with = F],
-        file = self$db_load_file,
-        fields = names(self$db_field_types)
+        file = infile
       )
+      self$table_in_use <- future::future({
+        upsert_load_data_infile(
+          db_config = self$db_config,
+          table = self$db_table,
+          dt = NULL,
+          file = infile,
+          fields = names(self$db_field_types)
+        )
+        },
+        packages="fd")
       b <- Sys.time()
       dif <- round(as.numeric(difftime(b, a, units = "secs")), 1)
       message(glue::glue("Loaded {nrow(newdata)} rows in {dif} seconds"))

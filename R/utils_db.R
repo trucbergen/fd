@@ -31,11 +31,42 @@ get_field_types <- function(conn, dt) {
   return(field_types)
 }
 
+random_uuid <- function(){
+  x <- uuid::UUIDgenerate(F)
+  x <- gsub("-","",x)
+  x <- paste0("a",x)
+  x
+}
 
-load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv") {
+#' @export random_file
+random_file <- function(folder,extension=".csv"){
+  fs::path(folder, paste0(random_uuid(),extension))
+}
+
+write_data_infile <- function(dt, file="/xtmp/x123.csv"){
   fwrite(dt, file = file,
          logical01 = T,
          na = "\\N")
+}
+
+#' @export load_data_infile
+load_data_infile <- function(conn=NULL, db_config=NULL, table, dt=NULL, file = "/xtmp/x123.csv") {
+  if(is.null(conn) & is.null(db_config)){
+    stop("conn and db_config both have error")
+  } else if(is.null(conn) & !is.null(db_config)){
+    conn <- get_db_connection(
+      driver = db_config$driver,
+      server = db_config$server,
+      port = db_config$port,
+      user = db_config$user,
+      password = db_config$password
+    )
+    fd:::use_db(conn, db_config$db)
+    on.exit(close(conn))
+  }
+
+  if(!is.null(dt)) write_data_infile(dt=dt, file=file)
+  on.exit(fs::file_delete(file), add=T)
 
   sep <- ","
   eol <- "\n"
@@ -43,7 +74,7 @@ load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv") {
   skip <- 0
   header <- T
   path <- normalizePath(file, winslash = "/", mustWork = TRUE)
-  
+
   sql <- paste0(
     "LOAD DATA INFILE ", DBI::dbQuoteString(conn, path), "\n",
     "INTO TABLE ", DBI::dbQuoteIdentifier(conn, table), "\n",
@@ -54,10 +85,28 @@ load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv") {
     "(",  paste0(names(dt), collapse = ","), ")"
   )
   DBI::dbExecute(conn, sql)
+
+
+
+  return(FALSE)
 }
 
-upsert_load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv", fields) {
-  temp_name <- paste0("a", round(stats::runif(1, 0, 1000000)))
+#' @export upsert_load_data_infile
+upsert_load_data_infile <- function(conn=NULL, db_config=NULL, table, dt, file = "/xtmp/x123.csv", fields) {
+  if(is.null(conn) & is.null(db_config)){
+    stop("conn and db_config both have error")
+  } else if(is.null(conn) & !is.null(db_config)){
+    conn <- get_db_connection(
+      driver = db_config$driver,
+      server = db_config$server,
+      port = db_config$port,
+      user = db_config$user,
+      password = db_config$password
+    )
+    fd:::use_db(conn, db_config$db)
+    on.exit(close(conn))
+  }
+  temp_name <- random_uuid()
   on.exit(DBI::dbRemoveTable(conn, temp_name))
 
   sql <- glue::glue("CREATE TEMPORARY TABLE {temp_name} LIKE {table};")
@@ -65,7 +114,7 @@ upsert_load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv", fi
 
   # TO SPEED UP EFFICIENCY DROP ALL INDEXES HERE
 
-  load_data_infile(conn = conn, temp_name, dt, file = file)
+  load_data_infile(conn = conn, table=temp_name, dt=dt, file = file)
 
   vals_fields <- glue::glue_collapse(fields, sep = ", ")
   vals <- glue::glue("{fields} = VALUES({fields})")
@@ -76,6 +125,8 @@ upsert_load_data_infile <- function(conn, table, dt, file = "/xtmp/x123.csv", fi
     ON DUPLICATE KEY UPDATE {vals};
     ")
   DBI::dbExecute(conn, sql)
+
+  return(FALSE)
 }
 
 drop_all_rows <- function(conn, table) {
@@ -105,4 +156,4 @@ get_db_connection <- function(driver="MySQL",
                      port = port,
                      user = user,
                      password = password))
-  
+

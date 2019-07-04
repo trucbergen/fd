@@ -11,6 +11,32 @@ setDT(d)
 setkeyv(d,c("tag","location"))
 d[,n:=100]
 
+s <- schema$new(
+  dt=d,
+  db_config=list(
+    driver="MySQL",
+    server="db",
+    db="test",
+    port = 3306,
+    user="root",
+    password="example"
+  ),
+  db_table="x",
+  db_field_types=c(
+    "tag"="TEXT",
+    "location"="TEXT",
+    "date"="DATE",
+    "n"="integer"
+  ),
+  db_load_folder = "/xtmp/",
+  keys=c("tag","location","date")
+  )
+s$db_connect()
+
+#future::plan(future::multisession)
+#s$table_in_use <- future::future(FALSE)
+s$db_upsert_load_data_infile(d)
+future::value(s$table_in_use)
 
 conn <- DBI::dbConnect(odbc::odbc(),
                      driver="MySQL",

@@ -17,7 +17,8 @@ Imports:
   methods,
   R6,
   magrittr,
-  stats
+  stats,
+  future
 Suggests: 
   testthat,
   knitr

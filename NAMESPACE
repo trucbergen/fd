@@ -2,7 +2,10 @@
 
 export("%>%")
 export(get_db_connection)
+export(load_data_infile)
+export(random_file)
 export(schema)
+export(upsert_load_data_infile)
 export(use_db)
 exportClasses(schema)
 import(R6)
