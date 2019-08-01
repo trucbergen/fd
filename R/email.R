@@ -90,6 +90,7 @@ e_emails <- function(project) {
   }
 
   emails <- stats::na.omit(emails[[project]])
+  emails <- glue::glue_collapse(emails, sep=",")
 
   return(emails)
 }
