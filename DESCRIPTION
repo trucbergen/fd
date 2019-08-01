@@ -1,0 +1,40 @@
+Package: fd
+Title: Structural Data for Norway
+Version: 2019.8.1
+Authors@R: c(
+    person("Gunnar", "Rø", email = "GunnarOyvindIsaksson.Ro@fhi.no", role = c("aut")), 
+    person("Richard", "White", email = "w@rwhite.no", role = c("aut", "cre")))
+Description: Provides structural data for Norway. Datasets relating to maps, population in municipalities, municipality/county matching, and how different municipalities have merged/redistricted over time from 2006 to 2019.
+Depends: R (>= 3.5.0)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: 
+  data.table,
+  glue,
+  dplyr,
+  rlang,
+  stringr,
+  DBI,
+  methods,
+  R6,
+  magrittr,
+  stats,
+  fs,
+  odbc,
+  uuid,
+  devtools,
+  lubridate,
+  fhi,
+  fhidata,
+  ncdf4,
+  reshape2,
+  zoo,
+  readxl,
+  httr
+Suggests: 
+  testthat,
+  knitr
+RoxygenNote: 6.1.1
+VignetteBuilder: knitr
+ByteCompile: true
