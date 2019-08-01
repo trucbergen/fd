@@ -64,6 +64,9 @@ mailgun <- function(subject, html = " ", to = NULL, bcc = NULL, include_footer =
     html <- glue::glue(html, e_footer)
   }
 
+  if(!is.null(to)) to <- glue::glue_collapse(to, sep=",")
+  if(!is.null(bcc)) bcc <- glue::glue_collapse(bcc, sep=",")
+
   httr::POST(
     url = e_url(),
     httr::authenticate("api", e_key()),
@@ -90,7 +93,6 @@ e_emails <- function(project) {
   }
 
   emails <- stats::na.omit(emails[[project]])
-  emails <- glue::glue_collapse(emails, sep=",")
 
   return(emails)
 }
