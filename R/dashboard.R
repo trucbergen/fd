@@ -43,8 +43,10 @@ initialize <- function(
 #' @param type msg, warn, err
 #' @param syscallsDepth The number of syscalls included in the message. Set to 0 to disable.
 #' @param newLine Should there be a new line at the start of the message?
+#' @param slack Should this also be posted to slack?
 #' @export msg
-msg <- function(txt, type = "msg", syscallsDepth = 2, newLine = FALSE) {
+msg <- function(txt, type = "msg", syscallsDepth = 2, newLine = FALSE, slack = FALSE) {
+  if(slack & config$is_production) slack(txt)
 
   # make warnings print immediately
   op <- options("warn")

@@ -4,7 +4,8 @@
 \alias{msg}
 \title{Enhanced Messaging}
 \usage{
-msg(txt, type = "msg", syscallsDepth = 2, newLine = FALSE)
+msg(txt, type = "msg", syscallsDepth = 2, newLine = FALSE,
+  slack = FALSE)
 }
 \arguments{
 \item{txt}{Text}
@@ -14,6 +15,8 @@ msg(txt, type = "msg", syscallsDepth = 2, newLine = FALSE)
 \item{syscallsDepth}{The number of syscalls included in the message. Set to 0 to disable.}
 
 \item{newLine}{Should there be a new line at the start of the message?}
+
+\item{slack}{Should this also be posted to slack?}
 }
 \description{
 Enhanced Messaging
