@@ -3,17 +3,21 @@
 #' @param dev_always_performs Does dev always perform action?
 #' @export
 perform_weekly_action <- function(file, dev_always_performs = FALSE) {
-  if (dev_always_performs & config$is_dev) {
-    return(TRUE)
-  }
-  this_week <- format.Date(lubridate::today(), "%V")
+
+  this_week <- fhi::isoyearweek(lubridate::today())
   perform_action <- TRUE
 
   if (file.exists(file)) {
-    x <- readRDS(file)
+    x <- readLines(file)
     if (this_week == x) {
       perform_action <- FALSE
     }
+  }
+
+  writeLines(this_week, con = file)
+
+  if (dev_always_performs & config$is_dev) {
+    return(TRUE)
   }
 
   return(perform_action)
