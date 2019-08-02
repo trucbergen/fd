@@ -3,7 +3,6 @@
 #' @param dev_always_performs Does dev always perform action?
 #' @export
 perform_weekly_action <- function(file, dev_always_performs = FALSE) {
-
   this_week <- fhi::isoyearweek(lubridate::today())
   perform_action <- TRUE
 
