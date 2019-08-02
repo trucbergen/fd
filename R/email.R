@@ -1,13 +1,13 @@
 e_url <- function() {
-  glue::glue("{base_url}/messages",base_url =  Sys.getenv("MAILGUN_URL","X"))
+  glue::glue("{base_url}/messages", base_url = Sys.getenv("MAILGUN_URL", "X"))
 }
 
 e_from <- function() {
-  Sys.getenv("MAILGUN_FROM","X")
+  Sys.getenv("MAILGUN_FROM", "X")
 }
 
 e_key <- function() {
-  Sys.getenv("MAILGUN_APIKEY","X")
+  Sys.getenv("MAILGUN_APIKEY", "X")
 }
 
 e_subject <- function(subject) {
@@ -53,7 +53,7 @@ mailgun <- function(subject, html = " ", to = NULL, bcc = NULL, include_footer =
     ...
   )
 
-  if(is.null(bcc)) body <- body[names(body)!="bcc"]
+  if (is.null(bcc)) body <- body[names(body) != "bcc"]
 
   httr::POST(
     url = e_url(),
