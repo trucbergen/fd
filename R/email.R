@@ -1,5 +1,5 @@
 e_url <- function() {
-  Sys.getenv("MAILGUN_URL","X")
+  glue::glue("{base_url}/messages",base_url =  Sys.getenv("MAILGUN_URL","X"))
 }
 
 e_from <- function() {
@@ -19,11 +19,11 @@ e_subject <- function(subject) {
 
 e_footer <- function() {
   return(glue::glue("
-    <br><br>
-    DO NOT REPLY TO THIS EMAIL! This email address is not checked by anyone!
-    <br>
-    To add or remove people to/from this notification list, send their details to richard.white@fhi.no
-    "))
+<br><br>
+  DO NOT REPLY TO THIS EMAIL! This email address is not checked by anyone!
+  <br>
+  To add or remove people to/from this notification list, send their details to richard.white@fhi.no
+"))
 }
 
 
@@ -44,18 +44,22 @@ mailgun <- function(subject, html = " ", to = NULL, bcc = NULL, include_footer =
   if (!is.null(to)) to <- glue::glue_collapse(to, sep = ",")
   if (!is.null(bcc)) bcc <- glue::glue_collapse(bcc, sep = ",")
 
+  body <- list(
+    from = e_from(),
+    subject = e_subject(subject),
+    html = html,
+    to = to,
+    bcc = bcc,
+    ...
+  )
+
+  if(is.null(bcc)) body <- body[names(body)!="bcc"]
+
   httr::POST(
     url = e_url(),
     httr::authenticate("api", e_key()),
     encode = "multipart",
-    body = list(
-      from = e_from(),
-      subject = e_subject(subject),
-      html = html,
-      to = to,
-      bcc = bcc,
-      ...
-    )
+    body = body
   )
 }
 
