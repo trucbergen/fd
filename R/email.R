@@ -1,36 +1,13 @@
-get_mailgun_info <- function() {
-  if (file.exists("/etc/mailgun/mailgun.txt")) {
-    con <- file("/etc/mailgun/mailgun.txt", "r")
-    url <- readLines(con, n = 1)
-    from <- readLines(con, n = 1)
-    api_key <- readLines(con, n = 1)
-    close(con)
-
-    config$mailgun_url <- glue::glue("{url}/messages")
-    config$mailgun_from <- from
-    config$mailgun_apikey <- api_key
-  }
-}
-
 e_url <- function() {
-  if (config$mailgun_url == "x") {
-    get_mailgun_info()
-  }
-  return(config$mailgun_url)
+  Sys.getenv("MAILGUN_URL","X")
 }
 
 e_from <- function() {
-  if (config$mailgun_from == "x") {
-    get_mailgun_info()
-  }
-  return(config$mailgun_from)
+  Sys.getenv("MAILGUN_FROM","X")
 }
 
 e_key <- function() {
-  if (config$mailgun_apikey == "x") {
-    get_mailgun_info()
-  }
-  return(config$mailgun_apikey)
+  Sys.getenv("MAILGUN_APIKEY","X")
 }
 
 e_subject <- function(subject) {
