@@ -21,14 +21,7 @@ config$mailgun_apikey <- "x"
 config$slack_webhook <- "x"
 
 config$frost_client_id <- Sys.getenv("FROST_CLIENT_ID", "c6d9bf2d-104c-4b5f-accf-d367b2220d62")
-config$db_config <- list(
-  driver = Sys.getenv("DB_DRIVER", "MySQL"),
-  server = Sys.getenv("DB_SERVER", "db"),
-  port = as.integer(Sys.getenv("DB_PORT", 3306)),
-  user = Sys.getenv("DB_USER", "root"),
-  password = Sys.getenv("DB_PASSWORD", "example"),
-  db = Sys.getenv("DB_DB", "sykdomspuls")
-)
+config$db_config <- list()
 
 
 #' Environment to store logs

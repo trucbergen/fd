@@ -1,14 +1,4 @@
-set_computer_name <- function() {
-  if (file.exists("/tmp/computer")) {
-    con <- file("/tmp/computer", "r")
-    name_computer <- readLines(con, n = 1)
-    close(con)
-  } else {
-    name_computer <- "NO_NAME_FOUND"
-  }
-  Sys.setenv(COMPUTER = name_computer)
-  config$name_computer <- name_computer
-}
+
 
 #' initialize
 #' @param package a
@@ -17,17 +7,10 @@ set_computer_name <- function() {
 initialize <- function(
                        package,
                        package_dir = paste0("/dashboards/dashboards_", package)) {
+
   config$package <- package
 
-  set_computer_name()
-  if (Sys.getenv("RSTUDIO") != "1" & config$name_computer %in% config$name_production) {
-    config$is_production <- TRUE
-  } else if (config$name_computer %in% config$name_testing) {
-    config$is_testing <- TRUE
-  } else {
-    msg(glue::glue("DEV computer name is: '{config$name_computer}' {Sys.getenv('RSTUDIO')}"))
-    config$is_dev <- TRUE
-  }
+  if(config$is_dev) msg(glue::glue("DEV computer name is: '{config$name_computer}'"))
 
   if (config$is_dev) {
     suppressPackageStartupMessages(devtools::load_all(package_dir, export_all = FALSE, quiet = TRUE))
