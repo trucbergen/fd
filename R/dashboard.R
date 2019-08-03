@@ -7,10 +7,9 @@
 initialize <- function(
                        package,
                        package_dir = paste0("/dashboards/dashboards_", package)) {
-
   config$package <- package
 
-  if(config$is_dev) msg(glue::glue("DEV computer name is: '{config$name_computer}'"))
+  if (config$is_dev) msg(glue::glue("DEV computer name is: '{config$name_computer}'"))
 
   if (config$is_dev) {
     suppressPackageStartupMessages(devtools::load_all(package_dir, export_all = FALSE, quiet = TRUE))
