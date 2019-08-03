@@ -18,7 +18,7 @@ set_computer_name <- function() {
   config$name_computer <- name_computer
 }
 
-set_computer_type <- function(){
+set_computer_type <- function() {
   if (Sys.getenv("RSTUDIO") != "1" & config$name_computer %in% config$name_production) {
     config$is_production <- TRUE
   } else if (config$name_computer %in% config$name_testing) {
@@ -28,7 +28,7 @@ set_computer_type <- function(){
   }
 }
 
-set_db <- function(){
+set_db <- function() {
   config$db_config <- list(
     driver = Sys.getenv("DB_DRIVER", "MySQL"),
     server = Sys.getenv("DB_SERVER", "db"),
