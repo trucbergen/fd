@@ -29,7 +29,7 @@ initialize <- function(
 #' @param slack Should this also be posted to slack?
 #' @export msg
 msg <- function(txt, type = "msg", syscallsDepth = 2, newLine = FALSE, slack = FALSE) {
-  if (slack & config$is_production) slack(txt)
+  if (slack & config$is_production) slack(glue::glue("{Sys.time()}: {txt}"))
 
   # make warnings print immediately
   op <- options("warn")
