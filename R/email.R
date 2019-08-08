@@ -32,10 +32,20 @@ e_footer <- function() {
 #' @param html a
 #' @param to a
 #' @param bcc a
+#' @param attachments a
 #' @param include_footer a
 #' @param ... a
 #' @export
-mailgun <- function(subject, html = " ", to = NULL, bcc = NULL, include_footer = T, ...) {
+mailgun <- function(
+  subject,
+  html = " ",
+  to = NULL,
+  bcc = NULL,
+  attachments = NULL,
+  include_footer = T,
+  ...
+  ) {
+
   if (is.null(to) & !is.null(bcc)) to <- "dashboardsfhi@gmail.com"
   if (include_footer) {
     html <- glue::glue(html, e_footer)
@@ -52,6 +62,15 @@ mailgun <- function(subject, html = " ", to = NULL, bcc = NULL, include_footer =
     bcc = bcc,
     ...
   )
+
+  if(!is.null(attachments)){
+    att <- vector("list", length=length(attachments))
+    for(i in seq_along(attachments)){
+      att[[i]] <- httr::upload_file(attachments[i])
+    }
+    names(att) <- rep("attachment", length(att))
+    body <- c(body, att)
+  }
 
   if (is.null(bcc)) body <- body[names(body) != "bcc"]
 
