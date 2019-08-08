@@ -13,7 +13,7 @@ initialize <- function(
 
   if (config$is_dev) {
     suppressPackageStartupMessages(devtools::load_all(package_dir, export_all = FALSE, quiet = TRUE))
-    options(error=traceback)
+    options(error = traceback)
   } else {
     suppressPackageStartupMessages(library(package, character.only = TRUE))
   }
