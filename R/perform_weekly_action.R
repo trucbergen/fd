@@ -15,7 +15,7 @@ perform_weekly_action <- function(file, dev_always_performs = FALSE) {
 
   writeLines(this_week, con = file)
 
-  if (dev_always_performs & config$is_dev) {
+  if (dev_always_performs & !config$is_production) {
     return(TRUE)
   }
 
