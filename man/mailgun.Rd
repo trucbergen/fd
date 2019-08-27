@@ -5,7 +5,7 @@
 \title{mailgun}
 \usage{
 mailgun(subject, html = " ", to = NULL, bcc = NULL,
-  attachments = NULL, include_footer = T, ...)
+  attachments = NULL, inlines = NULL, include_footer = T, ...)
 }
 \arguments{
 \item{subject}{a}
@@ -17,6 +17,8 @@ mailgun(subject, html = " ", to = NULL, bcc = NULL,
 \item{bcc}{a}
 
 \item{attachments}{a}
+
+\item{inlines}{a}
 
 \item{include_footer}{a}
 
