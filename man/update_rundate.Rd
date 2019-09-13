@@ -7,6 +7,15 @@ Updates the rundate db tables}
 \usage{
 update_rundate(package, date_extraction, date_results, date_run)
 }
+\arguments{
+\item{package}{a}
+
+\item{package}{date_extraction a}
+
+\item{package}{date_results a}
+
+\item{package}{date_run a}
+}
 \description{
 update_rundate
 Updates the rundate db tables

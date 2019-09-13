@@ -1,5 +1,9 @@
 #' update_rundate
 #' Updates the rundate db tables
+#' @param package a
+#' @param package date_extraction a
+#' @param package date_results a
+#' @param package date_run a
 #' @export
 update_rundate <- function(package, date_extraction, date_results, date_run) {
   # date_extraction = date when the data file was extracted
