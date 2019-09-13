@@ -10,11 +10,11 @@ update_rundate(package, date_extraction, date_results, date_run)
 \arguments{
 \item{package}{a}
 
-\item{package}{date_extraction a}
+\item{date_extraction}{date when the data file was extracted}
 
-\item{package}{date_results a}
+\item{date_results}{the last date of the results}
 
-\item{package}{date_run a}
+\item{date_run}{the date when the analysis was run}
 }
 \description{
 update_rundate
