@@ -78,8 +78,9 @@ msg <- function(txt, type = "msg", syscallsDepth = 2, newLine = FALSE, slack = F
 #'
 #' This function finds folders according to the dashboard philosophy
 #' @param inside where it is inside
-#' @param ... an optional file
+#' @param ... an optional path/file
+#' @param package The name of the package
 #' @export
-path <- function(inside = "data_raw", ...) {
-  fs::path("/", inside, config$package, ...)
+path <- function(inside = "data_raw", ..., package=config$package) {
+  fs::path("/", inside, package, ...)
 }

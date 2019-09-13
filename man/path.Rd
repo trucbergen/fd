@@ -4,12 +4,14 @@
 \alias{path}
 \title{Dashboard folders}
 \usage{
-path(inside = "data_raw", ...)
+path(inside = "data_raw", ..., package = config$package)
 }
 \arguments{
 \item{inside}{where it is inside}
 
-\item{...}{an optional file}
+\item{...}{an optional path/file}
+
+\item{package}{The name of the package}
 }
 \description{
 This function finds folders according to the dashboard philosophy

@@ -150,6 +150,18 @@ update_weather <- function() {
       weather$db_upsert_load_data_infile(d)
     }
   }
+
+  val <- weather$dplyr_tbl() %>%
+    dplyr::summarize(last_date = max(date, na.rm = T)) %>%
+    dplyr::collect() %>%
+    latin1_to_utf8()
+
+  update_rundate(
+    package="weather",
+    date_extraction=val$last_date,
+    date_results=val$last_date,
+    date_run=lubridate::today()
+  )
 }
 
 #' get_weather
