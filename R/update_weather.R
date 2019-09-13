@@ -157,10 +157,10 @@ update_weather <- function() {
     latin1_to_utf8()
 
   update_rundate(
-    package="weather",
-    date_extraction=val$last_date,
-    date_results=val$last_date,
-    date_run=lubridate::today()
+    package = "weather",
+    date_extraction = val$last_date,
+    date_results = val$last_date,
+    date_run = lubridate::today()
   )
 }
 

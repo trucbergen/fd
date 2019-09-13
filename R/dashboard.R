@@ -81,6 +81,6 @@ msg <- function(txt, type = "msg", syscallsDepth = 2, newLine = FALSE, slack = F
 #' @param ... an optional path/file
 #' @param package The name of the package
 #' @export
-path <- function(inside = "data_raw", ..., package=config$package) {
+path <- function(inside = "data_raw", ..., package = config$package) {
   fs::path("/", inside, package, ...)
 }
