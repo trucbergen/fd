@@ -3,7 +3,7 @@
 #' @param file Resultant .png file
 #' @export
 huxtable_to_png <- function(tab, file) {
-  name <- stringr::str_remove(name, ".png")
+  name <- stringr::str_remove(file, ".png")
   dir <- fs::path_dir(file)
 
   name_tex <- paste(name,".tex",sep="")
@@ -40,5 +40,5 @@ huxtable_to_png <- function(tab, file) {
   new <- paste0(name,".png")
   fs::file_move(old,new)
 
-  return(name)
+  return(invisible(file))
 }
