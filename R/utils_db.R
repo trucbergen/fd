@@ -192,3 +192,16 @@ get_db_connection <- function(driver = "MySQL",
     password = password,
     encoding = "utf8"
   ))
+
+
+#' tbl
+#' @param table table
+#' @param db db
+#' @export
+tbl <- function(table, db="sykdomspuls"){
+  if(is.null(connections[[db]])){
+    connections[[db]] <- get_db_connection()
+    use_db(connections[[db]], db)
+  }
+  return(dplyr::tbl(connections[[db]], table))
+}

@@ -29,3 +29,8 @@ config$db_config <- list()
 #' @export logdata
 logdata <- new.env()
 logdata$x <- 1
+
+
+#' Environment to store db connections
+#' @export connections
+connections <- new.env()

@@ -9,23 +9,23 @@ huxtable_to_png <- function(tab, file) {
   name_tex <- paste(name, ".tex", sep = "")
 
   output <- glue::glue("
-\documentclass{{standalone}}
-\usepackage{{booktabs}}
-\usepackage{{array}}
-\usepackage{{caption}}
-\usepackage{{graphicx}}
-\usepackage{{siunitx}}
-\usepackage{{colortbl}}
-\usepackage{{multirow}}
-\usepackage{{hhline}}
-\usepackage{{calc}}
-\usepackage{{tabularx}}
-\usepackage{{threeparttable}}
-\usepackage{{wrapfig}}
+\\documentclass{{standalone}}
+\\usepackage{{booktabs}}
+\\usepackage{{array}}
+\\usepackage{{caption}}
+\\usepackage{{graphicx}}
+\\usepackage{{siunitx}}
+\\usepackage{{colortbl}}
+\\usepackage{{multirow}}
+\\usepackage{{hhline}}
+\\usepackage{{calc}}
+\\usepackage{{tabularx}}
+\\usepackage{{threeparttable}}
+\\usepackage{{wrapfig}}
 
-\begin{{document}}
+\\begin{{document}}
 {huxtable::to_latex(tab,tabular_only=T)}
-\end{{document}}")
+\\end{{document}}")
   cat(output, file = name_tex)
 
   withr::with_dir(dir, tools::texi2dvi(file = name_tex))
