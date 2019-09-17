@@ -31,7 +31,8 @@ Imports:
   reshape2,
   zoo,
   readxl,
-  httr
+  httr,
+  withr
 Suggests: 
   testthat,
   knitr
