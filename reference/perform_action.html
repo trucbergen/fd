@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>perform_weekly_action — perform_weekly_action • fd</title>
+<title>perform_action — perform_action • fd</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="perform_weekly_action — perform_weekly_action" />
-<meta property="og:description" content="perform_weekly_action" />
+<meta property="og:title" content="perform_action — perform_action" />
+<meta property="og:description" content="perform_action" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -103,23 +103,27 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>perform_weekly_action</h1>
+    <h1>perform_action</h1>
     
-    <div class="hidden name"><code>perform_weekly_action.Rd</code></div>
+    <div class="hidden name"><code>perform_action.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>perform_weekly_action</p>
+    <p>perform_action</p>
     </div>
 
-    <pre class="usage"><span class='fu'>perform_weekly_action</span>(<span class='no'>file</span>, <span class='kw'>dev_always_performs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>perform_action</span>(<span class='no'>file</span>, <span class='no'>value</span>, <span class='kw'>dev_always_performs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>file</th>
-      <td><p>File that stores last used date</p></td>
+      <td><p>File that stores value</p></td>
+    </tr>
+    <tr>
+      <th>value</th>
+      <td><p>Value that will be checked against the saved file</p></td>
     </tr>
     <tr>
       <th>dev_always_performs</th>
