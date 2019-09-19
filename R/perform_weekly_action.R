@@ -29,7 +29,7 @@ perform_weekly_action <- function(file, dev_always_performs = FALSE) {
 #' @param dev_always_performs Does dev always perform action?
 #' @export
 perform_action <- function(file, value, dev_always_performs = FALSE) {
-  can_perform_action <- function(){
+  can_perform_action <- function() {
     perform_action <- TRUE
     if (file.exists(file)) {
       x <- readLines(file)
@@ -43,12 +43,12 @@ perform_action <- function(file, value, dev_always_performs = FALSE) {
 
     return(perform_action)
   }
-  action_performed <- function(){
+  action_performed <- function() {
     writeLines(as.character(value), con = file)
   }
 
   return(list(
-    can_perform_action=can_perform_action,
-    action_performed=action_performed
+    can_perform_action = can_perform_action,
+    action_performed = action_performed
   ))
 }

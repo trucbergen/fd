@@ -1,6 +1,6 @@
 Package: fd
 Title: Structural Data for Norway
-Version: 2019.9.17
+Version: 2019.9.19
 Authors@R: c(
     person("Gunnar", "Rø", email = "GunnarOyvindIsaksson.Ro@fhi.no", role = c("aut")), 
     person("Richard", "White", email = "w@rwhite.no", role = c("aut", "cre")))
