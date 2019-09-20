@@ -93,9 +93,12 @@ mailgun <- function(
 
 #' e_emails
 #' @param project a
+#' @param production_days days of the week when production emails will be sent
 #' @export
-e_emails <- function(project) {
-  if (config$is_production) {
+e_emails <- function(project, production_days=c(1:7)) {
+  today <- lubridate::wday(lubridate::today(),week_start=1)
+
+  if (config$is_production & today %in% production_days) {
     emails <- readxl::read_excel("/etc/gmailr/emails.xlsx")
   } else {
     emails <- readxl::read_excel("/etc/gmailr/emails_test.xlsx")

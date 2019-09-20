@@ -4,10 +4,12 @@
 \alias{e_emails}
 \title{e_emails}
 \usage{
-e_emails(project)
+e_emails(project, production_days = c(1:7))
 }
 \arguments{
 \item{project}{a}
+
+\item{production_days}{days of the week when production emails will be sent}
 }
 \description{
 e_emails

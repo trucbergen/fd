@@ -4,14 +4,19 @@
 \alias{perform_action}
 \title{perform_action}
 \usage{
-perform_action(file, value, dev_always_performs = FALSE)
+perform_action(key, value, dev_always_performs = FALSE,
+  production_days = c(1:7), first_date_of_production = "1900-01-01")
 }
 \arguments{
-\item{file}{File that stores value}
+\item{key}{Key that stores value}
 
 \item{value}{Value that will be checked against the saved file}
 
 \item{dev_always_performs}{Does dev always perform action?}
+
+\item{production_days}{If it occurs on this day of the week, the key is tagged with "PROD_", otherwise "TEST_"}
+
+\item{first_date_of_production}{If production machine, do not run before this date}
 }
 \description{
 perform_action
