@@ -3,19 +3,25 @@
 #' initialize
 #' @param package a
 #' @param package_dir a
+#' @param load_package Load the package or not
 #' @export
 initialize <- function(
                        package,
-                       package_dir = paste0("/dashboards/dashboards_", package)) {
+                       package_dir = paste0("/dashboards/dashboards_", package),
+                       load_package = TRUE) {
   config$package <- package
 
-  if (config$is_dev) msg(glue::glue("DEV computer name is: '{config$name_computer}'"))
+  if (config$is_dev){
+    msg(glue::glue("DEV computer name is: '{config$name_computer}'"))
+    options (error = traceback)
+  }
 
-  if (config$is_dev) {
-    suppressPackageStartupMessages(devtools::load_all(package_dir, export_all = FALSE, quiet = TRUE))
-    options(error = traceback)
-  } else {
-    suppressPackageStartupMessages(library(package, character.only = TRUE))
+  if(load_package){
+    if (config$is_dev) {
+      suppressPackageStartupMessages(devtools::load_all(package_dir, export_all = FALSE, quiet = TRUE))
+    } else {
+      suppressPackageStartupMessages(library(package, character.only = TRUE))
+    }
   }
 
   config$is_initialized <- TRUE

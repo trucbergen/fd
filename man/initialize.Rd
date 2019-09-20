@@ -5,12 +5,14 @@
 \title{initialize}
 \usage{
 initialize(package, package_dir = paste0("/dashboards/dashboards_",
-  package))
+  package), load_package = TRUE)
 }
 \arguments{
 \item{package}{a}
 
 \item{package_dir}{a}
+
+\item{load_package}{Load the package or not}
 }
 \description{
 initialize
