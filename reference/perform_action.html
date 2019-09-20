@@ -112,14 +112,15 @@
     <p>perform_action</p>
     </div>
 
-    <pre class="usage"><span class='fu'>perform_action</span>(<span class='no'>file</span>, <span class='no'>value</span>, <span class='kw'>dev_always_performs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>perform_action</span>(<span class='no'>key</span>, <span class='no'>value</span>, <span class='kw'>dev_always_performs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>production_days</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>:<span class='fl'>7</span>), <span class='kw'>first_date_of_production</span> <span class='kw'>=</span> <span class='st'>"1900-01-01"</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>file</th>
-      <td><p>File that stores value</p></td>
+      <th>key</th>
+      <td><p>Key that stores value</p></td>
     </tr>
     <tr>
       <th>value</th>
@@ -128,6 +129,14 @@
     <tr>
       <th>dev_always_performs</th>
       <td><p>Does dev always perform action?</p></td>
+    </tr>
+    <tr>
+      <th>production_days</th>
+      <td><p>If it occurs on this day of the week, the key is tagged with "PROD_", otherwise "TEST_"</p></td>
+    </tr>
+    <tr>
+      <th>first_date_of_production</th>
+      <td><p>If production machine, do not run before this date</p></td>
     </tr>
     </table>
 
