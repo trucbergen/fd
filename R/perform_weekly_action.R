@@ -31,14 +31,12 @@ perform_weekly_action <- function(file, dev_always_performs = FALSE) {
 #' @param first_date_of_production If production machine, do not run before this date
 #' @export
 perform_action <- function(
-  key,
-  value,
-  dev_always_performs = FALSE,
-  production_days=c(1:7),
-  first_date_of_production="1900-01-01"
-  ) {
-
-  today <- lubridate::wday(lubridate::today(),week_start=1)
+                           key,
+                           value,
+                           dev_always_performs = FALSE,
+                           production_days = c(1:7),
+                           first_date_of_production = "1900-01-01") {
+  today <- lubridate::wday(lubridate::today(), week_start = 1)
   if (today %in% production_days) {
     key <- glue::glue("PROD_{key}")
   } else {
@@ -49,7 +47,7 @@ perform_action <- function(
     perform_action <- TRUE
 
     old_value <- get_action(key)
-    if (length(old_value)>0) {
+    if (length(old_value) > 0) {
       if (value == old_value) {
         perform_action <- FALSE
       }
@@ -59,7 +57,7 @@ perform_action <- function(
       perform_action <- TRUE
     }
 
-    if(config$is_production & lubridate::today()<first_date_of_production){
+    if (config$is_production & lubridate::today() < first_date_of_production) {
       perform_action <- FALSE
     }
 
@@ -68,7 +66,7 @@ perform_action <- function(
   action_performed <- function() {
     update_action(key, value)
   }
-  current_value <- function(){
+  current_value <- function() {
     get_action(key)
   }
 
@@ -116,12 +114,12 @@ get_action <- function(key) {
   use_db(conn, "sykdomspuls")
 
   if (!DBI::dbExistsTable(conn, "action")) {
-    update_action("x","x")
+    update_action("x", "x")
   }
 
   temp <- fd::tbl("action") %>%
     dplyr::collect() %>%
     fd::latin1_to_utf8()
 
-  return(temp[keyx==key,value])
+  return(temp[keyx == key, value])
 }
