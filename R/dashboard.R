@@ -11,12 +11,12 @@ initialize <- function(
                        load_package = TRUE) {
   config$package <- package
 
-  if (config$is_dev){
+  if (config$is_dev) {
     msg(glue::glue("DEV computer name is: '{config$name_computer}'"))
-    options (error = traceback)
+    options(error = traceback)
   }
 
-  if(load_package){
+  if (load_package) {
     if (config$is_dev) {
       suppressPackageStartupMessages(devtools::load_all(package_dir, export_all = FALSE, quiet = TRUE))
     } else {
