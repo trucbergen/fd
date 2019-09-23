@@ -6,7 +6,7 @@
 \usage{
 mailgun(subject, html = " ", to = NULL, bcc = NULL,
   attachments = NULL, inlines = NULL, include_footer = T,
-  production_days = c(1:7), ...)
+  is_final = TRUE, ...)
 }
 \arguments{
 \item{subject}{a}
@@ -23,7 +23,7 @@ mailgun(subject, html = " ", to = NULL, bcc = NULL,
 
 \item{include_footer}{a}
 
-\item{production_days}{Days that the production computer is planned to send an email}
+\item{is_final}{Is this a final or preliminary email?}
 
 \item{...}{a}
 }
