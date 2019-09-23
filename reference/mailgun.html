@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fd</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2019.9.20</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2019.9.23</span>
       </span>
     </div>
 
@@ -113,7 +113,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>mailgun</span>(<span class='no'>subject</span>, <span class='kw'>html</span> <span class='kw'>=</span> <span class='st'>" "</span>, <span class='kw'>to</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>bcc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>attachments</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>inlines</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>include_footer</span> <span class='kw'>=</span> <span class='no'>T</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>attachments</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>inlines</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>include_footer</span> <span class='kw'>=</span> <span class='no'>T</span>,
+  <span class='kw'>production_days</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>:<span class='fl'>7</span>), <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,6 +146,10 @@
     <tr>
       <th>include_footer</th>
       <td><p>a</p></td>
+    </tr>
+    <tr>
+      <th>production_days</th>
+      <td><p>Days that the production computer is planned to send an email</p></td>
     </tr>
     <tr>
       <th>...</th>
