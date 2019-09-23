@@ -31,7 +31,7 @@ huxtable_to_png <- function(tab, file) {
   withr::with_dir(dir, tools::texi2dvi(file = name_tex))
 
   cmd <- paste("cd", shQuote(dir), "; dvipng -T tight -D 1200 -z 9", shQuote(paste(name, ".dvi", sep = "")))
-  invisible(system(cmd))
+  invisible(system(cmd, show.output.on.console = FALSE))
 
   cleaner <- c(".tex", ".aux", ".log", ".dvi")
   invisible(file.remove(paste(name, cleaner, sep = "")))

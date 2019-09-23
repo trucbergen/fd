@@ -22,60 +22,69 @@ perform_weekly_action <- function(file, dev_always_performs = FALSE) {
   return(perform_action)
 }
 
+#' action
+#' @import R6
+#' @export action
+action <- R6::R6Class(
+  "action",
+  portable = FALSE,
+  cloneable = FALSE,
+  public=list(
+    key = NULL,
+    value = NULL,
+    dev_always_performs = FALSE,
+    production_days = c(1:7),
+    first_date_of_production = "1900-01-01",
+    initialize = function(
+      key,
+      value,
+      dev_always_performs = FALSE,
+      production_days = c(1:7),
+      first_date_of_production = "1900-01-01"
+      ) {
+      value <<- value
+      dev_always_performs <<- dev_always_performs
+      production_days <<- production_days
+      first_date_of_production <<- first_date_of_production
 
-#' perform_action
-#' @param key Key that stores value
-#' @param value Value that will be checked against the saved file
-#' @param dev_always_performs Does dev always perform action?
-#' @param production_days If it occurs on this day of the week, the key is tagged with "PROD_", otherwise "TEST_"
-#' @param first_date_of_production If production machine, do not run before this date
-#' @export
-perform_action <- function(
-                           key,
-                           value,
-                           dev_always_performs = FALSE,
-                           production_days = c(1:7),
-                           first_date_of_production = "1900-01-01") {
-  today <- lubridate::wday(lubridate::today(), week_start = 1)
-  if (today %in% production_days) {
-    key <- glue::glue("PROD_{key}")
-  } else {
-    key <- glue::glue("TEST_{key}")
-  }
+      if (is_final()) {
+        key <<- glue::glue("FINAL_{key}")
+      } else {
+        key <<- glue::glue("PRELIM_{key}")
+      }
+    },
+    can_perform_action = function() {
+      perform_action <- TRUE
 
-  can_perform_action <- function() {
-    perform_action <- TRUE
+      old_value <- get_action(key)
+      if (length(old_value) > 0) {
+        if (value == old_value) {
+          perform_action <- FALSE
+        }
+      }
 
-    old_value <- get_action(key)
-    if (length(old_value) > 0) {
-      if (value == old_value) {
+      if (dev_always_performs & !config$is_production) {
+        perform_action <- TRUE
+      }
+
+      if (config$is_production & lubridate::today() < first_date_of_production) {
         perform_action <- FALSE
       }
+
+      return(perform_action)
+    },
+    action_performed = function() {
+      update_action(key, value)
+    },
+    is_final = function() {
+      today <- lubridate::wday(lubridate::today(), week_start = 1)
+      return(today %in% production_days)
+    },
+    current_value = function() {
+      get_action(key)
     }
-
-    if (dev_always_performs & !config$is_production) {
-      perform_action <- TRUE
-    }
-
-    if (config$is_production & lubridate::today() < first_date_of_production) {
-      perform_action <- FALSE
-    }
-
-    return(perform_action)
-  }
-  action_performed <- function() {
-    update_action(key, value)
-  }
-  current_value <- function() {
-    get_action(key)
-  }
-
-  return(list(
-    can_perform_action = can_perform_action,
-    action_performed = action_performed,
-    current_value = current_value
-  ))
-}
+  )
+)
 
 update_action <- function(key, value) {
   # date_extraction = date when the data file was extracted

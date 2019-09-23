@@ -25,6 +25,46 @@ thredds_collapse_one_day <- function(d) {
   return(skeleton)
 }
 
+thredds_get_data_internal <- function(nc, dates){
+  res <- vector("list", length = length(dates))
+  for (i in seq_along(res)) {
+    tg <- ncdf4::ncvar_get(nc, "tg", start = c(1, 1, i), count = c(nc$dim$X$len, nc$dim$Y$len, 1))
+    d <- reshape2::melt(tg)
+    temp <- thredds_collapse_one_day(d)
+    setnames(temp, "value", "tg")
+    retval <- temp
+
+    if("tx" %in% names(nc$var)){
+      tx <- ncdf4::ncvar_get(nc, "tx", start = c(1, 1, i), count = c(nc$dim$X$len, nc$dim$Y$len, 1))
+      d <- reshape2::melt(tx)
+      temp <- thredds_collapse_one_day(d)
+      retval[temp,on="location_code",tx:=value]
+    }
+
+    if("tn" %in% names(nc$var)){
+      tn <- ncdf4::ncvar_get(nc, "tn", start = c(1, 1, i), count = c(nc$dim$X$len, nc$dim$Y$len, 1))
+      d <- reshape2::melt(tn)
+      temp <- thredds_collapse_one_day(d)
+      retval[temp,on="location_code",tn:=value]
+    }
+
+    if("rr" %in% names(nc$var)){
+      rr <- ncdf4::ncvar_get(nc, "rr", start = c(1, 1, i), count = c(nc$dim$X$len, nc$dim$Y$len, 1))
+      d <- reshape2::melt(rr)
+      prec <- thredds_collapse_one_day(d)
+      retval[temp,on="location_code",rr:=value]
+    }
+
+    res[[i]] <- retval
+    res[[i]][, date := dates[i]]
+  }
+  ncdf4::nc_close(nc)
+
+  res <- rbindlist(res)
+
+  return(res)
+}
+
 thredds_get_data <- function(year = NULL, date = NULL) {
   if (is.null(year) & is.null(date)) {
     stop("year AND date cannot be NULL")
@@ -57,29 +97,26 @@ thredds_get_data <- function(year = NULL, date = NULL) {
   if (!is.null(year) && year == 2019) {
     dates[1:40] <- as.Date("2019-01-01") + 0:39
   }
-  # if(!is.null(year)) dates <- dates[1,]
-  # for some weird reason, 'dates' has 2 dates in it when dealing with daily data
-  # we only need the first
-  # if(!is.null(date)) dates <- dates[1]
 
-  res <- vector("list", length = length(dates))
-  for (i in seq_along(res)) {
-    tg <- ncdf4::ncvar_get(nc, "tg", start = c(1, 1, i), count = c(nc$dim$X$len, nc$dim$Y$len, 1))
-    d <- reshape2::melt(tg)
-    temp <- thredds_collapse_one_day(d)
-    setnames(temp, "value", "tg")
-
-    rr <- ncdf4::ncvar_get(nc, "rr", start = c(1, 1, i), count = c(nc$dim$X$len, nc$dim$Y$len, 1))
-    d <- reshape2::melt(rr)
-    prec <- thredds_collapse_one_day(d)
-    setnames(prec, "value", "rr")
-
-    res[[i]] <- merge(temp, prec, by = "location_code")
-    res[[i]][, date := dates[i]]
-  }
+  res <- thredds_get_data_internal(nc=nc, dates=dates)
   ncdf4::nc_close(nc)
 
-  res <- rbindlist(res)
+  if(!is.null(year) && year == 2019) {
+    file <- "seNorge2018_20190101_20190623.nc"
+    url <- glue::glue("http://thredds.met.no/thredds/fileServer/senorge/seNorge_2018/Archive/{file}")
+    temp_file2 <- fs::path(temp_dir, file)
+
+    on.exit(fs::file_delete(temp_file2))
+
+    utils::download.file(
+      url,
+      temp_file2
+    )
+
+    nc <- ncdf4::nc_open(temp_file2)
+    dates <- as.Date("1900-01-01") + nc$dim$time$vals
+  }
+
   setcolorder(res, c("date", "location_code", "tg", "rr"))
 
   return(res)
@@ -93,6 +130,8 @@ update_weather <- function() {
     "date" = "DATE",
     "location_code" = "TEXT",
     "tg" = "DOUBLE",
+    "tx" = "DOUBLE",
+    "tn" = "DOUBLE",
     "rr" = "DOUBLE"
   )
 
@@ -121,7 +160,7 @@ update_weather <- function() {
   download_years <- NULL
 
   if (is.na(val$last_date)) {
-    download_years <- 2006:lubridate::year(lubridate::today())
+    download_years <- 2000:lubridate::year(lubridate::today())
   } else {
     last_date <- lubridate::today() - 1
 
