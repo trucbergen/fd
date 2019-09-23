@@ -14,7 +14,7 @@ e_subject <- function(subject, production_days) {
   if (!config$is_production) {
     subject <- glue::glue("TEST: {subject}")
   }
-  if(config$is_production & !today %in% production_days){
+  if (config$is_production & !today %in% production_days) {
     subject <- glue::glue("NOT_PRODUCTION: {subject}")
   }
   return(subject)
@@ -61,7 +61,7 @@ mailgun <- function(
 
   body <- list(
     from = e_from(),
-    subject = e_subject(subject, production_days=production_days),
+    subject = e_subject(subject, production_days = production_days),
     html = html,
     to = to,
     bcc = bcc,
