@@ -29,19 +29,18 @@ action <- R6::R6Class(
   "action",
   portable = FALSE,
   cloneable = FALSE,
-  public=list(
+  public = list(
     key = NULL,
     value = NULL,
     dev_always_performs = FALSE,
     production_days = c(1:7),
     first_date_of_production = "1900-01-01",
     initialize = function(
-      key,
-      value,
-      dev_always_performs = FALSE,
-      production_days = c(1:7),
-      first_date_of_production = "1900-01-01"
-      ) {
+                              key,
+                              value,
+                              dev_always_performs = FALSE,
+                              production_days = c(1:7),
+                              first_date_of_production = "1900-01-01") {
       value <<- value
       dev_always_performs <<- dev_always_performs
       production_days <<- production_days

@@ -10,7 +10,7 @@ e_key <- function() {
   Sys.getenv("MAILGUN_APIKEY", "X")
 }
 
-e_subject <- function(subject, is_final=TRUE) {
+e_subject <- function(subject, is_final = TRUE) {
   today <- lubridate::wday(lubridate::today(), week_start = 1)
 
   if (!config$is_production) {
