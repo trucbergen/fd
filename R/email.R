@@ -10,14 +10,14 @@ e_key <- function() {
   Sys.getenv("MAILGUN_APIKEY", "X")
 }
 
-e_subject <- function(subject, production_days) {
+e_subject <- function(subject, is_final=TRUE) {
   today <- lubridate::wday(lubridate::today(), week_start = 1)
 
   if (!config$is_production) {
     subject <- glue::glue("TEST: {subject}")
   }
-  if (config$is_production & !today %in% production_days) {
-    subject <- glue::glue("NOT_PRODUCTION: {subject}")
+  if (config$is_production & !is_final) {
+    subject <- glue::glue("PRELIMINARY: {subject}")
   }
   return(subject)
 }
@@ -40,7 +40,7 @@ e_footer <- function() {
 #' @param attachments a
 #' @param inlines a
 #' @param include_footer a
-#' @param production_days Days that the production computer is planned to send an email
+#' @param is_final Is this a final or preliminary email?
 #' @param ... a
 #' @export
 mailgun <- function(
@@ -51,7 +51,7 @@ mailgun <- function(
                     attachments = NULL,
                     inlines = NULL,
                     include_footer = T,
-                    production_days = c(1:7),
+                    is_final = TRUE,
                     ...) {
   if (is.null(to) & !is.null(bcc)) to <- "dashboardsfhi@gmail.com"
   if (include_footer) {
@@ -63,7 +63,7 @@ mailgun <- function(
 
   body <- list(
     from = e_from(),
-    subject = e_subject(subject, production_days = production_days),
+    subject = e_subject(subject, is_final = is_final),
     html = html,
     to = to,
     bcc = bcc,
@@ -100,12 +100,10 @@ mailgun <- function(
 
 #' e_emails
 #' @param project a
-#' @param production_days days of the week when production emails will be sent
+#' @param is_final Is final or preliminary email?
 #' @export
-e_emails <- function(project, production_days = c(1:7)) {
-  today <- lubridate::wday(lubridate::today(), week_start = 1)
-
-  if (config$is_production & today %in% production_days) {
+e_emails <- function(project, is_final = TRUE) {
+  if (config$is_production & is_final) {
     emails <- readxl::read_excel("/etc/gmailr/emails.xlsx")
   } else {
     emails <- readxl::read_excel("/etc/gmailr/emails_test.xlsx")
