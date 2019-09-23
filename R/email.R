@@ -11,6 +11,8 @@ e_key <- function() {
 }
 
 e_subject <- function(subject, production_days) {
+  today <- lubridate::wday(lubridate::today(), week_start = 1)
+
   if (!config$is_production) {
     subject <- glue::glue("TEST: {subject}")
   }
