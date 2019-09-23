@@ -5,7 +5,8 @@
 \title{mailgun}
 \usage{
 mailgun(subject, html = " ", to = NULL, bcc = NULL,
-  attachments = NULL, inlines = NULL, include_footer = T, ...)
+  attachments = NULL, inlines = NULL, include_footer = T,
+  production_days = c(1:7), ...)
 }
 \arguments{
 \item{subject}{a}
@@ -21,6 +22,8 @@ mailgun(subject, html = " ", to = NULL, bcc = NULL,
 \item{inlines}{a}
 
 \item{include_footer}{a}
+
+\item{production_days}{Days that the production computer is planned to send an email}
 
 \item{...}{a}
 }

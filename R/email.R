@@ -10,9 +10,12 @@ e_key <- function() {
   Sys.getenv("MAILGUN_APIKEY", "X")
 }
 
-e_subject <- function(subject) {
+e_subject <- function(subject, production_days) {
   if (!config$is_production) {
     subject <- glue::glue("TEST: {subject}")
+  }
+  if(config$is_production & !today %in% production_days){
+    subject <- glue::glue("NOT_PRODUCTION: {subject}")
   }
   return(subject)
 }
@@ -35,6 +38,7 @@ e_footer <- function() {
 #' @param attachments a
 #' @param inlines a
 #' @param include_footer a
+#' @param production_days Days that the production computer is planned to send an email
 #' @param ... a
 #' @export
 mailgun <- function(
@@ -45,6 +49,7 @@ mailgun <- function(
                     attachments = NULL,
                     inlines = NULL,
                     include_footer = T,
+                    production_days = c(1:7),
                     ...) {
   if (is.null(to) & !is.null(bcc)) to <- "dashboardsfhi@gmail.com"
   if (include_footer) {
@@ -56,7 +61,7 @@ mailgun <- function(
 
   body <- list(
     from = e_from(),
-    subject = e_subject(subject),
+    subject = e_subject(subject, production_days=production_days),
     html = html,
     to = to,
     bcc = bcc,
