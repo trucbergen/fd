@@ -32,7 +32,8 @@ Imports:
   zoo,
   readxl,
   httr,
-  withr
+  withr,
+  xml2
 Suggests: 
   testthat,
   knitr
