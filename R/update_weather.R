@@ -40,7 +40,7 @@ thredds_get_data_internal <- function(nc, dates) {
       temp <- thredds_collapse_one_day(d)
       retval[temp, on = "location_code", tx := value]
     } else {
-      retval[, tx:=as.numeric(NA)]
+      retval[, tx := as.numeric(NA)]
     }
 
     if ("tn" %in% names(nc$var)) {
@@ -49,7 +49,7 @@ thredds_get_data_internal <- function(nc, dates) {
       temp <- thredds_collapse_one_day(d)
       retval[temp, on = "location_code", tn := value]
     } else {
-      retval[, tn:=as.numeric(NA)]
+      retval[, tn := as.numeric(NA)]
     }
 
     if ("rr" %in% names(nc$var)) {
@@ -58,7 +58,7 @@ thredds_get_data_internal <- function(nc, dates) {
       temp <- thredds_collapse_one_day(d)
       retval[temp, on = "location_code", rr := value]
     } else {
-      retval[, rr:=as.numeric(NA)]
+      retval[, rr := as.numeric(NA)]
     }
 
     res[[i]] <- retval
@@ -118,11 +118,11 @@ thredds_get_data <- function(year = NULL, date = NULL) {
     res2 <- thredds_get_data_internal(nc = nc, dates = dates)
     ncdf4::nc_close(nc)
 
-    res[res2,on=c("location_code","date"),remove:=1]
+    res[res2, on = c("location_code", "date"), remove := 1]
     res <- res[is.na(remove)]
-    res[,remove:=NULL]
+    res[, remove := NULL]
 
-    res <- rbind(res2,res)
+    res <- rbind(res2, res)
   }
 
   setcolorder(res, c("date", "location_code", "tg", "tx", "tn", "rr"))
@@ -130,34 +130,33 @@ thredds_get_data <- function(year = NULL, date = NULL) {
   return(res)
 }
 
-thredds_get_forecast <- function(){
-  a <- httr::GET("https://api.met.no/weatherapi/locationforecastlts/1.3/?lat=60.10&lon=9.58",httr::content_type_xml())
+thredds_get_forecast <- function() {
+  a <- httr::GET("https://api.met.no/weatherapi/locationforecastlts/1.3/?lat=60.10&lon=9.58", httr::content_type_xml())
   a <- xml2::read_xml(a$content)
-  baz <- xml2::xml_find_all(a, './/maxTemperature')
-  res <- vector("list",length=length(baz))
-  for(i in seq_along(baz)){
+  baz <- xml2::xml_find_all(a, ".//maxTemperature")
+  res <- vector("list", length = length(baz))
+  for (i in seq_along(baz)) {
     parent <- xml2::xml_parent(baz[[i]])
     grandparent <- xml2::xml_parent(parent)
-    time_from <- xml2::xml_attr(grandparent,"from")
-    time_to <- xml2::xml_attr(grandparent,"to")
-    x <- xml2::xml_find_all(parent, './/minTemperature')
-    temp_min <- xml2::xml_attr(x,"value")
-    x <- xml2::xml_find_all(parent, './/maxTemperature')
-    temp_max <- xml2::xml_attr(x,"value")
-    x <- xml2::xml_find_all(parent, './/precipitation')
-    precip <- xml2::xml_attr(x,"value")
+    time_from <- xml2::xml_attr(grandparent, "from")
+    time_to <- xml2::xml_attr(grandparent, "to")
+    x <- xml2::xml_find_all(parent, ".//minTemperature")
+    temp_min <- xml2::xml_attr(x, "value")
+    x <- xml2::xml_find_all(parent, ".//maxTemperature")
+    temp_max <- xml2::xml_attr(x, "value")
+    x <- xml2::xml_find_all(parent, ".//precipitation")
+    precip <- xml2::xml_attr(x, "value")
 
     res[[i]] <- data.frame(
-      time_from=as.character(time_from),
-      time_to=as.character(time_to),
-      tx=temp_max,
-      tn=temp_min,
-      rr=precip
+      time_from = as.character(time_from),
+      time_to = as.character(time_to),
+      tx = temp_max,
+      tn = temp_min,
+      rr = precip
     )
   }
   res <- rbindlist(res)
-  res <- res[stringr::str_sub(time_from,12,13) %in% c("00","06","12","18")]
-
+  res <- res[stringr::str_sub(time_from, 12, 13) %in% c("00", "06", "12", "18")]
 }
 
 #' update_weather
