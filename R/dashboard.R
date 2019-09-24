@@ -20,7 +20,7 @@ initialize <- function(
     if (config$is_dev) {
       tryCatch(
         suppressPackageStartupMessages(devtools::load_all(package_dir, export_all = FALSE, quiet = TRUE)),
-        error = function(x){
+        error = function(x) {
           msg("Failed to load from folder, now loading from package library")
           suppressPackageStartupMessages(library(package, character.only = TRUE))
         }
