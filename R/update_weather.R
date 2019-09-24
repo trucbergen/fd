@@ -126,6 +126,7 @@ thredds_get_data <- function(year = NULL, date = NULL) {
   }
 
   setcolorder(res, c("date", "location_code", "tg", "tx", "tn", "rr"))
+  res[, forecast:=FALSE]
 
   return(res)
 }
@@ -157,6 +158,12 @@ thredds_get_forecast <- function() {
   }
   res <- rbindlist(res)
   res <- res[stringr::str_sub(time_from, 12, 13) %in% c("00", "06", "12", "18")]
+  res[, date:=as.Date(stringr::str_sub(time_from,1, 10))]
+  res[,N:=.N,by=date]
+  res <- res[N==4]
+  res <- res[,.(
+
+  )]
 }
 
 #' update_weather
@@ -169,7 +176,8 @@ update_weather <- function() {
     "tg" = "DOUBLE",
     "tx" = "DOUBLE",
     "tn" = "DOUBLE",
-    "rr" = "DOUBLE"
+    "rr" = "DOUBLE",
+    "forecast" = "BOOLEAN"
   )
 
   keys <- c(
