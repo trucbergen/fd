@@ -179,11 +179,13 @@ add_constraint <- function(conn, table, keys) {
 #' @param user user
 #' @param password password
 #' @export get_db_connection
-get_db_connection <- function(driver = "MySQL",
-                              server = "db",
-                              port = 3306,
-                              user = "root",
-                              password = "example")
+get_db_connection <- function(
+  driver = config$db_config$driver,
+                              server = config$db_config$server,
+                              port = config$db_config$port,
+                              user = config$db_config$user,
+                              password = config$db_config$password
+  ){
   return(DBI::dbConnect(odbc::odbc(),
     driver = driver,
     server = server,
@@ -192,7 +194,7 @@ get_db_connection <- function(driver = "MySQL",
     password = password,
     encoding = "utf8"
   ))
-
+}
 
 #' tbl
 #' @param table table

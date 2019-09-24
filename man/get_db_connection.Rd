@@ -4,8 +4,9 @@
 \alias{get_db_connection}
 \title{get_db_connection}
 \usage{
-get_db_connection(driver = "MySQL", server = "db", port = 3306,
-  user = "root", password = "example")
+get_db_connection(driver = config$db_config$driver,
+  server = config$db_config$server, port = config$db_config$port,
+  user = config$db_config$user, password = config$db_config$password)
 }
 \arguments{
 \item{driver}{driver}
