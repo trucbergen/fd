@@ -62,6 +62,5 @@ function err() {
 
 set -o errexit -o nounset
 PKG_REPO=$PWD
-Rscript -e "styler::style_pkg('$PKG_REPO/')"
 
 travis-branch-commit
