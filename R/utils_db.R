@@ -180,12 +180,11 @@ add_constraint <- function(conn, table, keys) {
 #' @param password password
 #' @export get_db_connection
 get_db_connection <- function(
-  driver = config$db_config$driver,
+                              driver = config$db_config$driver,
                               server = config$db_config$server,
                               port = config$db_config$port,
                               user = config$db_config$user,
-                              password = config$db_config$password
-  ){
+                              password = config$db_config$password) {
   return(DBI::dbConnect(odbc::odbc(),
     driver = driver,
     server = server,
