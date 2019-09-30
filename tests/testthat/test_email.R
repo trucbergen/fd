@@ -22,6 +22,7 @@ test_that("Test mailgun", {
                 html=glue::glue("test_email<br><br>\nDO NOT REPLY TO THIS EMAIL! This email address is not checked by anyone!\n<br>\nTo add or remove people to/from this notification list, send their details to richard.white@fhi.no"),
                 to=NULL
               )
+              )
 
   config$is_production <- TRUE
   mailgun(
