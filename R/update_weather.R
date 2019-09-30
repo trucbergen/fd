@@ -132,17 +132,18 @@ thredds_get_data <- function(year = NULL, date = NULL) {
 }
 
 thredds_get_forecast_internal <- function(x_loc) {
-  if(!x_loc %in% fhidata::norway_map_municips$location_code) stop("not valid location")
+  if (!x_loc %in% fhidata::norway_map_municips$location_code) stop("not valid location")
   pos <- fhidata::norway_map_municips[
-    location_code=="municip0301",
+    location_code == "municip0301",
     .(
-      lon=round(mean(long),2),
-      lat=round(mean(lat),2)
-    )]
+      lon = round(mean(long), 2),
+      lat = round(mean(lat), 2)
+    )
+  ]
 
   a <- httr::GET(glue::glue("https://api.met.no/weatherapi/locationforecastlts/1.3/?lat={pos$lat}&lon={pos$lon}"), httr::content_type_xml())
   a <- xml2::read_xml(a$content)
-  #xml2::write_xml(a, "/git/test.xml")
+  # xml2::write_xml(a, "/git/test.xml")
   baz <- xml2::xml_find_all(a, ".//maxTemperature")
   res <- vector("list", length = length(baz))
   for (i in seq_along(baz)) {
@@ -171,22 +172,23 @@ thredds_get_forecast_internal <- function(x_loc) {
   res[, N := .N, by = date]
   res <- res[N == 4]
   res <- res[, .(
-    tg=NA,
-    tx=min(tx),
-    tn=max(tn),
-    rr=sum(rr)
+    tg = NA,
+    tx = min(tx),
+    tn = max(tn),
+    rr = sum(rr)
   ),
-  keyby=.(date)]
-  res[,forecast:=TRUE]
-  res[,location_code:=x_loc]
+  keyby = .(date)
+  ]
+  res[, forecast := TRUE]
+  res[, location_code := x_loc]
 
   return(res)
 }
 
-thredds_get_forecast <- function(){
-  res <- vector("list", length=nrow(fhidata::norway_locations_current))
-  pb <- fhi::txt_progress_bar(max=length(res))
-  for(i in seq_along(res)){
+thredds_get_forecast <- function() {
+  res <- vector("list", length = nrow(fhidata::norway_locations_current))
+  pb <- fhi::txt_progress_bar(max = length(res))
+  for (i in seq_along(res)) {
     utils::setTxtProgressBar(pb, i)
     res[[i]] <- thredds_get_forecast_internal(x_loc = fhidata::norway_locations_current$municip_code[i])
   }
@@ -226,7 +228,7 @@ update_weather <- function() {
   weather$db_connect()
 
   val <- weather$dplyr_tbl() %>%
-    dplyr::filter(forecast==0) %>%
+    dplyr::filter(forecast == 0) %>%
     dplyr::summarize(last_date = max(date, na.rm = T)) %>%
     dplyr::collect() %>%
     latin1_to_utf8()
@@ -265,7 +267,7 @@ update_weather <- function() {
     }
   }
 
-  if(!is.null(download_dates) | !is.null(download_years)){
+  if (!is.null(download_dates) | !is.null(download_years)) {
     d <- thredds_get_forecast()
     weather$db_upsert_load_data_infile(d)
   }
@@ -281,7 +283,6 @@ update_weather <- function() {
     date_results = val$last_date,
     date_run = lubridate::today()
   )
-
 }
 
 #' get_weather
@@ -336,7 +337,7 @@ get_weather <- function() {
 
   temp[, yrwk := fhi::isoyearweek(date)]
 
-  temp[, forecast:=as.logical(forecast)]
+  temp[, forecast := as.logical(forecast)]
 
   return(temp)
 }
