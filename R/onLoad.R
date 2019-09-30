@@ -19,7 +19,7 @@ set_computer_name <- function() {
 }
 
 set_computer_type <- function() {
-  if (Sys.getenv("RSTUDIO") != "1" & config$name_computer %in% config$name_production) {
+  if (config$name_computer %in% config$name_production) {
     config$is_production <- TRUE
   } else if (config$name_computer %in% config$name_testing) {
     config$is_testing <- TRUE

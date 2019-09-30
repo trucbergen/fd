@@ -1,6 +1,6 @@
 Package: fd
 Title: Structural Data for Norway
-Version: 2019.9.23
+Version: 2019.09.30
 Authors@R: c(
     person("Gunnar", "Rø", email = "GunnarOyvindIsaksson.Ro@fhi.no", role = c("aut")), 
     person("Richard", "White", email = "w@rwhite.no", role = c("aut", "cre")))
@@ -32,7 +32,9 @@ Imports:
   zoo,
   readxl,
   httr,
-  withr
+  withr,
+  xml2,
+  utils
 Suggests: 
   testthat,
   knitr
