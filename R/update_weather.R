@@ -292,9 +292,7 @@ get_weather <- function() {
   conn <- get_db_connection()
   use_db(conn, "sykdomspuls")
 
-  if (!DBI::dbExistsTable(conn, "weather")) {
-    stop("you need to run update_weather()")
-  }
+  if (!DBI::dbExistsTable(conn, "weather")) update_weather()
 
   temp <- dplyr::tbl(conn, "weather") %>%
     dplyr::collect() %>%
