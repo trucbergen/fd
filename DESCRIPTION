@@ -33,7 +33,8 @@ Imports:
   readxl,
   httr,
   withr,
-  xml2
+  xml2,
+  utils
 Suggests: 
   testthat,
   knitr
