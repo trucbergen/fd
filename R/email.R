@@ -109,9 +109,7 @@ e_emails <- function(project, is_final = TRUE) {
     email_loc <- "/etc/gmailr/emails_test.xlsx"
   }
 
-  # using readxl package here sometimes causes problems.
-  # can't figure out why.
-  emails <- openxlsx::read.xlsx(email_loc)
+  emails <- readxl::read_excel(email_loc)
   emails <- stats::na.omit(emails[[project]])
 
   return(emails)
