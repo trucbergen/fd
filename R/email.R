@@ -109,18 +109,9 @@ e_emails <- function(project, is_final = TRUE) {
     email_loc <- "/etc/gmailr/emails_test.xlsx"
   }
 
-  # do this to try and get around a permission error
-  temp_loc <- fs::path(tempdir(), glue::glue("{uuid::UUIDgenerate()}.xlsx"))
-  fs::file_copy(email_loc, temp_loc)
-  fs::file_chmod(temp_loc, "777")
-
-  fhi::with_dir(
-    tempdir(),
-    emails <- readxl::read_excel(temp_loc)
-  )
-
-  fs::file_delete(temp_loc)
-
+  # using readxl package here sometimes causes problems.
+  # can't figure out why.
+  emails <- openxlsx::read.xlsx(email_loc)
   emails <- stats::na.omit(emails[[project]])
 
   return(emails)

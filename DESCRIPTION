@@ -31,6 +31,7 @@ Imports:
   reshape2,
   zoo,
   readxl,
+  openxlsx,
   httr,
   withr,
   xml2,
