@@ -4,11 +4,14 @@
 #' @param package a
 #' @param package_dir a
 #' @param load_package Load the package or not
+#' @param silent Load it silently?
 #' @export
 initialize <- function(
                        package,
                        package_dir = paste0("/dashboards/dashboards_", package),
-                       load_package = TRUE) {
+                       load_package = TRUE,
+                       silent = TRUE
+                       ) {
   config$package <- package
 
   if (config$is_dev) {
@@ -22,11 +25,19 @@ initialize <- function(
         suppressPackageStartupMessages(devtools::load_all(package_dir, export_all = FALSE, quiet = TRUE)),
         error = function(x) {
           msg("Failed to load from folder, now loading from package library")
-          suppressPackageStartupMessages(library(package, character.only = TRUE))
+          if(silent){
+            suppressPackageStartupMessages(library(package, character.only = TRUE))
+          } else {
+            library(package, character.only = TRUE)
+          }
         }
       )
     } else {
-      suppressPackageStartupMessages(library(package, character.only = TRUE))
+      if(silent){
+        suppressPackageStartupMessages(library(package, character.only = TRUE))
+      } else {
+        library(package, character.only = TRUE)
+      }
     }
   }
 

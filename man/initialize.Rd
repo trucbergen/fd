@@ -5,7 +5,7 @@
 \title{initialize}
 \usage{
 initialize(package, package_dir = paste0("/dashboards/dashboards_",
-  package), load_package = TRUE)
+  package), load_package = TRUE, silent = TRUE)
 }
 \arguments{
 \item{package}{a}
@@ -13,6 +13,8 @@ initialize(package, package_dir = paste0("/dashboards/dashboards_",
 \item{package_dir}{a}
 
 \item{load_package}{Load the package or not}
+
+\item{silent}{Load it silently?}
 }
 \description{
 initialize
