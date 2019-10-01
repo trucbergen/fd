@@ -32,7 +32,7 @@ initialize <- function(
         }
       )
     } else {
-      if(!config$is_initialized) setwd(tempdir())
+      if (!config$is_initialized) setwd(tempdir())
       if (silent) {
         suppressPackageStartupMessages(library(package, character.only = TRUE))
       } else {
