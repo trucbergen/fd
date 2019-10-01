@@ -110,9 +110,14 @@ e_emails <- function(project, is_final = TRUE) {
   }
 
   # do this to try and get around a permission error
-  temp_loc <- fs::path("/tmp", glue::glue("{uuid::UUIDgenerate()}.xlsx"))
+  temp_loc <- fs::path(tempdir(), glue::glue("{uuid::UUIDgenerate()}.xlsx"))
   fs::file_copy(email_loc, temp_loc)
-  emails <- readxl::read_excel(temp_loc)
+
+  fhi::with_dir(
+    tempdir(),
+    emails <- readxl::read_excel(temp_loc)
+  )
+
   fs::file_delete(temp_loc)
 
   emails <- stats::na.omit(emails[[project]])
