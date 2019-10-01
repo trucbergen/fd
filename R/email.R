@@ -112,6 +112,7 @@ e_emails <- function(project, is_final = TRUE) {
   # do this to try and get around a permission error
   temp_loc <- fs::path(tempdir(), glue::glue("{uuid::UUIDgenerate()}.xlsx"))
   fs::file_copy(email_loc, temp_loc)
+  fs::file_chmod(temp_loc, "777")
 
   fhi::with_dir(
     tempdir(),
