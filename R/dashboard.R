@@ -10,8 +10,7 @@ initialize <- function(
                        package,
                        package_dir = paste0("/dashboards/dashboards_", package),
                        load_package = TRUE,
-                       silent = TRUE
-                       ) {
+                       silent = TRUE) {
   config$package <- package
 
   if (config$is_dev) {
@@ -25,7 +24,7 @@ initialize <- function(
         suppressPackageStartupMessages(devtools::load_all(package_dir, export_all = FALSE, quiet = TRUE)),
         error = function(x) {
           msg("Failed to load from folder, now loading from package library")
-          if(silent){
+          if (silent) {
             suppressPackageStartupMessages(library(package, character.only = TRUE))
           } else {
             library(package, character.only = TRUE)
@@ -33,7 +32,7 @@ initialize <- function(
         }
       )
     } else {
-      if(silent){
+      if (silent) {
         suppressPackageStartupMessages(library(package, character.only = TRUE))
       } else {
         library(package, character.only = TRUE)
