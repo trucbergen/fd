@@ -173,8 +173,8 @@ thredds_get_forecast_internal <- function(x_loc) {
   res <- res[N == 4]
   res <- res[, .(
     tg = NA,
-    tx = min(tx),
-    tn = max(tn),
+    tx = max(tx),
+    tn = min(tn),
     rr = sum(rr)
   ),
   keyby = .(date)
