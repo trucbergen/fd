@@ -301,7 +301,7 @@ get_weather <- function(impute_missing = FALSE) {
 
   if (impute_missing) {
     fit <- lme4::lmer(tx ~ tg + (1 | location_code), data = temp)
-    temp[, tx_pred := stats::predict(fit, newdata = weather)]
+    temp[, tx_pred := stats::predict(fit, newdata = temp)]
     temp[is.na(tx) & !is.na(tx_pred), tx := tx_pred]
     temp[, tx_pred := NULL]
 
