@@ -5,7 +5,10 @@
 \title{get_weather
 Gets the weather, population weighted at county and national levels}
 \usage{
-get_weather()
+get_weather(impute_missing = FALSE)
+}
+\arguments{
+\item{impute_missing}{Do you want missing data imputed?}
 }
 \description{
 get_weather

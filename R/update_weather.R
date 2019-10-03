@@ -287,8 +287,9 @@ update_weather <- function() {
 
 #' get_weather
 #' Gets the weather, population weighted at county and national levels
+#' @param impute_missing Do you want missing data imputed?
 #' @export
-get_weather <- function() {
+get_weather <- function(impute_missing=FALSE) {
   conn <- get_db_connection()
   use_db(conn, "sykdomspuls")
 
@@ -297,6 +298,23 @@ get_weather <- function() {
   temp <- dplyr::tbl(conn, "weather") %>%
     dplyr::collect() %>%
     fd::latin1_to_utf8()
+
+  if(impute_missing){
+    fit <- lme4::lmer(tx~tg + (1|location_code), data = temp)
+    temp[,tx_pred:=stats::predict(fit,newdata=weather)]
+    temp[is.na(tx) & !is.na(tx_pred), tx:=tx_pred]
+    temp[,tx_pred:=NULL]
+
+    fit <- lme4::lmer(tn~tg + (1|location_code), data = temp)
+    temp[,tn_pred:=stats::predict(fit,newdata=temp)]
+    temp[is.na(tn) & !is.na(tn_pred), tn:=tn_pred]
+    temp[,tn_pred:=NULL]
+
+    fit <- lme4::lmer(tg~tx+tn + (1|location_code), data = temp)
+    temp[,tg_pred:=stats::predict(fit,newdata=temp)]
+    temp[is.na(tg) & !is.na(tg_pred), tg:=tg_pred]
+    temp[,tg_pred:=NULL]
+  }
 
   pop <- fhidata::norway_population_current[, .(
     pop = sum(pop)
