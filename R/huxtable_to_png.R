@@ -3,10 +3,13 @@
 #' @param file Resultant .png file
 #' @export
 huxtable_to_png <- function(tab, file) {
-  name <- stringr::str_remove(file, ".png")
-  dir <- fs::path_dir(file)
+  name <- fs::path_file(stringr::str_remove(file, ".png"))
+  dir_end <- fs::path_dir(file)
+  dir_tmp <- fhi::temp_dir()
 
-  name_tex <- paste(name, ".tex", sep = "")
+  file_tex <- fs::path(dir_tmp,glue::glue("{name}.tex"))
+  file_dvi <- fs::path(dir_tmp,glue::glue("{name}.dvi"))
+  file_ <- fs::path(dir_tmp,glue::glue("{name}"))
 
   output <- glue::glue("
 \\documentclass{{standalone}}
@@ -26,18 +29,18 @@ huxtable_to_png <- function(tab, file) {
 \\begin{{document}}
 {huxtable::to_latex(tab,tabular_only=T)}
 \\end{{document}}")
-  cat(output, file = name_tex)
+  cat(output, file = file_tex)
 
-  withr::with_dir(dir, tools::texi2dvi(file = name_tex))
+  withr::with_dir(temp_dir, tools::texi2dvi(file = file_tex))
 
-  cmd <- paste("cd", shQuote(dir), "; dvipng -T tight -D 1200 -z 9", shQuote(paste(name, ".dvi", sep = "")))
+  cmd <- paste("cd", shQuote(temp_dir), "; dvipng -T tight -D 1200 -z 9", shQuote(file_dvi))
   invisible(system(cmd, show.output.on.console = FALSE))
 
   cleaner <- c(".tex", ".aux", ".log", ".dvi")
-  invisible(file.remove(paste(name, cleaner, sep = "")))
+  invisible(file.remove(paste(file_, cleaner, sep = "")))
 
-  old <- paste0(name, "1.png")
-  new <- paste0(name, ".png")
+  old <- glue::glue("{file_}.png")
+  new <- file
   fs::file_move(old, new)
 
   return(invisible(file))
