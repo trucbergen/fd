@@ -64,8 +64,8 @@ get_rundate <- function() {
 #' @export
 exists_rundate <- function(pkg) {
   rd <- get_rundate()
-  if(nrow(rd[package==pkg])==0) return(FALSE)
+  if (nrow(rd[package == pkg]) == 0) {
+    return(FALSE)
+  }
   return(TRUE)
-
 }
-
