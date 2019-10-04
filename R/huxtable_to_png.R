@@ -7,9 +7,9 @@ huxtable_to_png <- function(tab, file) {
   dir_end <- fs::path_dir(file)
   dir_tmp <- fhi::temp_dir()
 
-  file_tex <- fs::path(dir_tmp,glue::glue("{name}.tex"))
-  file_dvi <- fs::path(dir_tmp,glue::glue("{name}.dvi"))
-  file_ <- fs::path(dir_tmp,glue::glue("{name}"))
+  file_tex <- fs::path(dir_tmp, glue::glue("{name}.tex"))
+  file_dvi <- fs::path(dir_tmp, glue::glue("{name}.dvi"))
+  file_ <- fs::path(dir_tmp, glue::glue("{name}"))
 
   output <- glue::glue("
 \\documentclass{{standalone}}
