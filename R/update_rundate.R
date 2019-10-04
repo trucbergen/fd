@@ -57,3 +57,15 @@ get_rundate <- function() {
     fd::latin1_to_utf8()
   return(temp)
 }
+
+#' greater_than_rundate
+#' Checks to see if the rundate exists fora particular package
+#' @param pkg Package
+#' @export
+exists_rundate <- function(pkg) {
+  rd <- get_rundate()
+  if(nrow(rd[package==pkg])==0) return(FALSE)
+  return(TRUE)
+
+}
+
