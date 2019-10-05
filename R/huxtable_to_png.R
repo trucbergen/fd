@@ -31,16 +31,18 @@ huxtable_to_png <- function(tab, file) {
 \\end{{document}}")
   cat(output, file = file_tex)
 
-  withr::with_dir(temp_dir, tools::texi2dvi(file = file_tex))
+  withr::with_dir(dir_tmp, tools::texi2dvi(file = file_tex))
 
-  cmd <- paste("cd", shQuote(temp_dir), "; dvipng -T tight -D 1200 -z 9", shQuote(file_dvi))
-  invisible(system(cmd, show.output.on.console = FALSE))
+  cmd <- paste("cd", shQuote(dir_tmp), "; dvipng -T tight -D 1200 -z 9", shQuote(file_dvi))
+  invisible(system(cmd))
 
   cleaner <- c(".tex", ".aux", ".log", ".dvi")
   invisible(file.remove(paste(file_, cleaner, sep = "")))
 
-  old <- glue::glue("{file_}.png")
+  old <- glue::glue("{file_}1.png")
   new <- file
+
+  unlink(new)
   fs::file_move(old, new)
 
   return(invisible(file))
