@@ -104,11 +104,12 @@ mailgun <- function(
 #' @export
 e_emails <- function(project, is_final = TRUE) {
   if (config$is_production & is_final) {
-    emails <- readxl::read_excel("/etc/gmailr/emails.xlsx")
+    email_loc <- "/etc/gmailr/emails.xlsx"
   } else {
-    emails <- readxl::read_excel("/etc/gmailr/emails_test.xlsx")
+    email_loc <- "/etc/gmailr/emails_test.xlsx"
   }
 
+  emails <- readxl::read_excel(email_loc)
   emails <- stats::na.omit(emails[[project]])
 
   return(emails)

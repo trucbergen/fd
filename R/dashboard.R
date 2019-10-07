@@ -4,11 +4,13 @@
 #' @param package a
 #' @param package_dir a
 #' @param load_package Load the package or not
+#' @param silent Load it silently?
 #' @export
 initialize <- function(
                        package,
                        package_dir = paste0("/dashboards/dashboards_", package),
-                       load_package = TRUE) {
+                       load_package = TRUE,
+                       silent = TRUE) {
   config$package <- package
 
   if (config$is_dev) {
@@ -22,11 +24,20 @@ initialize <- function(
         suppressPackageStartupMessages(devtools::load_all(package_dir, export_all = FALSE, quiet = TRUE)),
         error = function(x) {
           msg("Failed to load from folder, now loading from package library")
-          suppressPackageStartupMessages(library(package, character.only = TRUE))
+          if (silent) {
+            suppressPackageStartupMessages(library(package, character.only = TRUE))
+          } else {
+            library(package, character.only = TRUE)
+          }
         }
       )
     } else {
-      suppressPackageStartupMessages(library(package, character.only = TRUE))
+      if (!config$is_initialized) setwd(tempdir())
+      if (silent) {
+        suppressPackageStartupMessages(library(package, character.only = TRUE))
+      } else {
+        library(package, character.only = TRUE)
+      }
     }
   }
 
@@ -99,26 +110,26 @@ path <- function(inside = "data_raw", ..., package = config$package) {
 
 #' Results folder
 #'
-#' This function gets the right folder for results 
+#' This function gets the right folder for results
 #' @param results_folder_name name of the results folder
 #' @param date the date of extraction
 #' @export
-results_folder <- function(results_folder_name, date){
-  fd::path("results",
-           results_folder_name,
-           date
-           )
+results_folder <- function(results_folder_name, date) {
+  fd::path(
+    "results",
+    results_folder_name,
+    date
+  )
 }
 
 #' Create latest folder
-#' 
+#'
 #' This function copies results_folder/date til results_folder/latest
 #' @param results_folder_name name of the results folder
 #' @param date the date of extraction
 #' @export
-create_latest_folder <- function(results_folder_name, date){
+create_latest_folder <- function(results_folder_name, date) {
   from_folder <- results_folder(results_folder_name, date)
   to_folder <- fd::path("results", results_folder_name, "latest")
   processx::run("cp", c("-rT", from_folder, to_folder))
-  
 }
