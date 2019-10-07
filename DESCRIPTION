@@ -34,7 +34,8 @@ Imports:
   httr,
   withr,
   xml2,
-  utils
+  utils,
+  processx
 Suggests: 
   testthat,
   mockery,
