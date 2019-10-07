@@ -131,6 +131,5 @@ results_folder <- function(results_folder_name, date) {
 create_latest_folder <- function(results_folder_name, date) {
   from_folder <- results_folder(results_folder_name, date)
   to_folder <- fd::path("results", results_folder_name, "latest")
-
-  fs::dir_copy(from_folder, to_folder, overwrite = TRUE)
+  processx::run("cp", c("-rT", from_folder, to_folder))
 }

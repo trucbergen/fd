@@ -35,6 +35,7 @@ Imports:
   withr,
   xml2,
   utils,
+  processx,
   lme4
 Suggests: 
   testthat,
