@@ -206,3 +206,30 @@ tbl <- function(table, db = "sykdomspuls") {
   }
   return(dplyr::tbl(connections[[db]], table))
 }
+
+#' list_tables
+#' @param db db
+#' @export
+list_tables <- function(db = "sykdomspuls") {
+  if (is.null(connections[[db]])) {
+    connections[[db]] <- get_db_connection()
+    use_db(connections[[db]], db)
+  }
+  return(DBI::dbListTables(connections[[db]]))
+
+}
+
+
+#' drop_table
+#' @param table table
+#' @param db db
+#' @export
+drop_table <- function(table, db = "sykdomspuls") {
+  if (is.null(connections[[db]])) {
+    connections[[db]] <- get_db_connection()
+    use_db(connections[[db]], db)
+  }
+  return(DBI::dbRemoveTable(connections[[db]], name=table))
+}
+
+
