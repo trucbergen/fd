@@ -43,7 +43,7 @@ huxtable_to_png <- function(tab, file) {
   new <- file
 
   unlink(new)
-  fs::file_move(old, new)
+  processx::run("mv", c(old, new))
 
   return(invisible(file))
 }
