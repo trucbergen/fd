@@ -57,10 +57,10 @@ mailgun <- function(
                     ...) {
   if (is.null(to) & !is.null(bcc)) to <- "dashboardsfhi@gmail.com"
 
-  html <- stringr::str_remove(html,"<html>")
-  html <- stringr::str_remove(html,"</html>")
+  html <- stringr::str_remove(html, "<html>")
+  html <- stringr::str_remove(html, "</html>")
 
-  if(cleanup_outlook){
+  if (cleanup_outlook) {
     new_head <- glue::glue("
     <head>
     <style>
@@ -97,13 +97,13 @@ mailgun <- function(
   <body width='100%' style='margin: 0; padding: 0 !important; mso-line-height-rule: exactly;'>
   ")
 
-  new_end <- glue::glue("
+    new_end <- glue::glue("
   </body>
   </html>
   ")
 
-  html <- stringr::str_replace_all(html, "<table [^>]*>","<table>")
-  html <- stringr::str_replace_all(html,"<table>",'<table role="presentation" cellspacing="0" cellpadding="0" border="0">')
+    html <- stringr::str_replace_all(html, "<table [^>]*>", "<table>")
+    html <- stringr::str_replace_all(html, "<table>", '<table role="presentation" cellspacing="0" cellpadding="0" border="0">')
   } else {
     new_head <- "<html>"
     new_end <- glue::glue("

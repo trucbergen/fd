@@ -40,8 +40,8 @@ set_db <- function() {
   )
 }
 
-set_border <- function(){
-  if(config$is_production){
+set_border <- function() {
+  if (config$is_production) {
     config$border <- 2019
   } else {
     config$border <- 2019

@@ -321,8 +321,8 @@ get_weather <- function(impute_missing = FALSE) {
     temp[, tg_pred := NULL]
   }
 
-  temp[,year:=data.table::year(date)]
-  to_merge <- fd::norway_fixing_merged_municips()[,c(
+  temp[, year := data.table::year(date)]
+  to_merge <- fd::norway_fixing_merged_municips()[, c(
     "municip_code_original",
     "municip_code_current",
     "year",
@@ -332,19 +332,19 @@ get_weather <- function(impute_missing = FALSE) {
   temp <- merge(
     temp,
     to_merge,
-    by.x=c("location_code","year","border"),
-    by.y=c("municip_code_original","year","border_start"),
+    by.x = c("location_code", "year", "border"),
+    by.y = c("municip_code_original", "year", "border_start"),
     all.x = T
   )
 
-  temp <- temp[,.(
-    tg = mean(tg*weighting),
-    tx = mean(tx*weighting),
-    tn = mean(tn*weighting),
-    rr = mean(rr*weighting),
+  temp <- temp[, .(
+    tg = mean(tg * weighting),
+    tx = mean(tx * weighting),
+    tn = mean(tn * weighting),
+    rr = mean(rr * weighting),
     forecast = max(forecast)
-  ),keyby=.(
-    location_code=municip_code_current,
+  ), keyby = .(
+    location_code = municip_code_current,
     date
   )]
 
