@@ -1,10 +1,10 @@
 thredds_collapse_one_day <- function(d) {
   setDT(d)
   setnames(d, c("Var1", "Var2"), c("row", "col"))
-  d[fhidata::senorge, on = c("row", "col"), location_code := location_code]
-  d[fhidata::senorge, on = c("row", "col"), year := year]
+  d[fd::senorge(), on = c("row", "col"), location_code := location_code]
+  d[fd::senorge(), on = c("row", "col"), year := year]
   d <- d[!is.na(location_code)]
-  d[fhidata::norway_municip_merging,
+  d[fd::norway_municip_merging(),
     on = c(
       "location_code==municip_code_original",
       "year==year"
@@ -15,7 +15,7 @@ thredds_collapse_one_day <- function(d) {
     value = mean(value, na.rm = T)
   ), keyby = .(location_code_current)]
 
-  skeleton <- fhidata::norway_locations_current[, c("municip_code")]
+  skeleton <- fd::norway_locations()[, c("municip_code")]
   skeleton[res, on = "municip_code==location_code_current", value := value]
   setnames(skeleton, "municip_code", "location_code")
   setorder(skeleton, location_code)
@@ -128,13 +128,15 @@ thredds_get_data <- function(year = NULL, date = NULL) {
   setcolorder(res, c("date", "location_code", "tg", "tx", "tn", "rr"))
   res[, forecast := FALSE]
 
+  res[, border := config$border]
+
   return(res)
 }
 
 thredds_get_forecast_internal <- function(x_loc) {
-  if (!x_loc %in% fhidata::norway_map_municips$location_code) stop("not valid location")
-  pos <- fhidata::norway_map_municips[
-    location_code == "municip0301",
+  if (!x_loc %in% fd::norway_map_municips()$location_code) stop("not valid location")
+  pos <- fd::norway_map_municips()[
+    location_code == x_loc,
     .(
       lon = round(mean(long), 2),
       lat = round(mean(lat), 2)
@@ -186,13 +188,15 @@ thredds_get_forecast_internal <- function(x_loc) {
 }
 
 thredds_get_forecast <- function() {
-  res <- vector("list", length = nrow(fhidata::norway_locations_current))
+  res <- vector("list", length = nrow(fd::norway_locations()))
   pb <- fhi::txt_progress_bar(max = length(res))
   for (i in seq_along(res)) {
     utils::setTxtProgressBar(pb, i)
-    res[[i]] <- thredds_get_forecast_internal(x_loc = fhidata::norway_locations_current$municip_code[i])
+    res[[i]] <- thredds_get_forecast_internal(x_loc = fd::norway_locations()$municip_code[i])
   }
   res <- rbindlist(res)
+
+  res[, border := config$border]
 
   return(res)
 }
@@ -208,7 +212,8 @@ update_weather <- function() {
     "tx" = "DOUBLE",
     "tn" = "DOUBLE",
     "rr" = "DOUBLE",
-    "forecast" = "BOOLEAN"
+    "forecast" = "BOOLEAN",
+    "border" = "INTEGER"
   )
 
   keys <- c(
@@ -316,7 +321,34 @@ get_weather <- function(impute_missing = FALSE) {
     temp[, tg_pred := NULL]
   }
 
-  pop <- fhidata::norway_population_current[, .(
+  temp[,year:=data.table::year(date)]
+  to_merge <- fd::norway_fixing_merged_municips()[,c(
+    "municip_code_original",
+    "municip_code_current",
+    "year",
+    "border_start",
+    "weighting"
+  )]
+  temp <- merge(
+    temp,
+    to_merge,
+    by.x=c("location_code","year","border"),
+    by.y=c("municip_code_original","year","border_start"),
+    all.x = T
+  )
+
+  temp <- temp[,.(
+    tg = mean(tg*weighting),
+    tx = mean(tx*weighting),
+    tn = mean(tn*weighting),
+    rr = mean(rr*weighting),
+    forecast = max(forecast)
+  ),keyby=.(
+    location_code=municip_code_current,
+    date
+  )]
+
+  pop <- fd::norway_population()[, .(
     pop = sum(pop)
   ), keyby = .(location_code, year)]
 
@@ -324,7 +356,7 @@ get_weather <- function(impute_missing = FALSE) {
   temp[pop, on = c("location_code", "year"), pop := pop]
   temp <- temp[!is.na(pop)]
 
-  temp[fhidata::norway_locations_current,
+  temp[fd::norway_locations(),
     on = "location_code==municip_code",
     county_code := county_code
   ]

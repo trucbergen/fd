@@ -41,6 +41,7 @@ e_footer <- function() {
 #' @param inlines a
 #' @param include_footer a
 #' @param is_final Is this a final or preliminary email?
+#' @param cleanup_outlook Do we need to clean up problems with outlook?
 #' @param ... a
 #' @export
 mailgun <- function(
@@ -52,11 +53,67 @@ mailgun <- function(
                     inlines = NULL,
                     include_footer = T,
                     is_final = TRUE,
+                    cleanup_outlook = TRUE,
                     ...) {
   if (is.null(to) & !is.null(bcc)) to <- "dashboardsfhi@gmail.com"
+
+  html <- stringr::str_remove(html,"<html>")
+  html <- stringr::str_remove(html,"</html>")
+
+  if(cleanup_outlook){
+    new_head <- glue::glue("
+    <head>
+    <style>
+    /* Remove space around the email design. */
+
+     html, body {{
+         margin: 0 auto !important;
+         padding: 0 !important;
+         height: 100% !important;
+         width: 100% !important;
+     }}
+     /* Stop Outlook resizing small text. */
+     * {{
+         -ms-text-size-adjust: 100%;
+     }}
+
+     /* Stop Outlook from adding extra spacing to tables. */
+     table, td {{
+         mso-table-lspace: 0pt !important;
+         mso-table-rspace: 0pt !important;
+     }}
+
+     /* Use a better rendering method when resizing images in Outlook IE. */
+     img {{
+         -ms-interpolation-mode:bicubic;
+     }}
+
+   /* Prevent Windows 10 Mail from underlining links. Styles for underlined links should be inline. */
+     a {{
+         text-decoration: none;
+     }}
+  </style>
+  </head>
+  <body width='100%' style='margin: 0; padding: 0 !important; mso-line-height-rule: exactly;'>
+  ")
+
+  new_end <- glue::glue("
+  </body>
+  </html>
+  ")
+
+  html <- stringr::str_replace_all(html, "<table [^>]*>","<table>")
+  html <- stringr::str_replace_all(html,"<table>",'<table role="presentation" cellspacing="0" cellpadding="0" border="0">')
+  } else {
+    new_head <- "<html>"
+    new_end <- glue::glue("
+    </html>
+    ")
+  }
   if (include_footer) {
     html <- glue::glue(html, e_footer())
   }
+  html <- paste0(new_head, html, new_end)
 
   if (!is.null(to)) to <- glue::glue_collapse(to, sep = ",")
   if (!is.null(bcc)) bcc <- glue::glue_collapse(bcc, sep = ",")

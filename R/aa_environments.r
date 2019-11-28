@@ -14,6 +14,8 @@ config$is_dev <- FALSE
 
 config$is_initialized <- FALSE
 
+config$border <- 2019
+
 config$mailgun_url <- "x"
 config$mailgun_from <- "x"
 config$mailgun_apikey <- "x"

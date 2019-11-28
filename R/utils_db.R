@@ -228,5 +228,5 @@ drop_table <- function(table, db = "sykdomspuls") {
     connections[[db]] <- get_db_connection()
     use_db(connections[[db]], db)
   }
-  return(DBI::dbRemoveTable(connections[[db]], name = table))
+  return(try(DBI::dbRemoveTable(connections[[db]], name = table),TRUE))
 }
