@@ -36,7 +36,8 @@ Imports:
   xml2,
   utils,
   processx,
-  lme4
+  lme4,
+  epitrix
 Suggests: 
   testthat,
   mockery,
