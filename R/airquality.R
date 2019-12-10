@@ -3,7 +3,7 @@ airquality_info <- function(){
   #vurl = "https://api.nilu.no/aq/historical/" # aq =  luftkvalitetsindeksen (aqi)
   #vurl = "https://api.nilu.no/stats/day/" #  stats/day =  luftkvalitetsindeksen + (aqi) for seven days
 
-  vstation <- c("Bergen","Oslo","Stavanger","Trondheim","Tromsø")
+  vstation <- c("Bergen","Oslo","Stavanger","Trondheim","Troms\u00F8")
 
   # Get selected stations
   lurl <- "https://api.nilu.no/lookup/stations"
