@@ -67,8 +67,6 @@ mailgun <- function(
     /* Remove space around the email design. */
 
      html, body {{
-         margin: 0 auto !important;
-         padding: 0 !important;
          height: 100% !important;
          width: 100% !important;
      }}
@@ -94,7 +92,7 @@ mailgun <- function(
      }}
   </style>
   </head>
-  <body width='100%' style='margin: 0; padding: 0 !important; mso-line-height-rule: exactly;'>
+  <body width='100%' style='!important; mso-line-height-rule: exactly;'>
   ")
 
     new_end <- glue::glue("
