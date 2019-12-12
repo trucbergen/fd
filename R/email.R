@@ -64,12 +64,6 @@ mailgun <- function(
     new_head <- glue::glue("
     <head>
     <style>
-    /* Remove space around the email design. */
-
-     html, body {{
-         height: 100% !important;
-         width: 100% !important;
-     }}
      /* Stop Outlook resizing small text. */
      * {{
          -ms-text-size-adjust: 100%;
@@ -92,7 +86,7 @@ mailgun <- function(
      }}
   </style>
   </head>
-  <body width='100%' style='!important; mso-line-height-rule: exactly;'>
+  <body style='!important; mso-line-height-rule: exactly;'>
   ")
 
     new_end <- glue::glue("
