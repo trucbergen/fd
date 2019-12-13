@@ -27,7 +27,7 @@ schema <- R6Class("schema",
       self$check_fields_match <- check_fields_match
 
       ind <- self$db_field_types[self$keys] == "TEXT"
-      if(sum(ind)>0){
+      if (sum(ind) > 0) {
         self$keys_with_length[ind] <- paste0(self$keys_with_length[ind], " (40)")
       }
       if (!is.null(self$conn)) self$db_create_table()
