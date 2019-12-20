@@ -1,6 +1,6 @@
 Package: fd
 Title: Structural Data for Norway
-Version: 2019.11.05
+Version: 2019.12.13
 Authors@R: c(
     person("Gunnar", "Rø", email = "GunnarOyvindIsaksson.Ro@fhi.no", role = c("aut")), 
     person("Richard", "White", email = "w@rwhite.no", role = c("aut", "cre")))
@@ -11,6 +11,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
   data.table,
+  fhidata,
   glue,
   dplyr,
   rlang,
@@ -26,7 +27,6 @@ Imports:
   devtools,
   lubridate,
   fhi,
-  fhidata,
   ncdf4,
   reshape2,
   zoo,
@@ -36,7 +36,8 @@ Imports:
   xml2,
   utils,
   processx,
-  lme4
+  lme4,
+  epitrix
 Suggests: 
   testthat,
   mockery,

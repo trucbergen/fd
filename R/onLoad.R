@@ -2,6 +2,7 @@
   set_computer_name()
   set_computer_type()
   set_db()
+  set_border()
 
   invisible()
 }
@@ -37,4 +38,12 @@ set_db <- function() {
     password = Sys.getenv("DB_PASSWORD", "example"),
     db = Sys.getenv("DB_DB", "sykdomspuls")
   )
+}
+
+set_border <- function() {
+  if (config$is_production) {
+    config$border <- 2019
+  } else {
+    config$border <- 2019
+  }
 }

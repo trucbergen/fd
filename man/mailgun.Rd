@@ -6,7 +6,7 @@
 \usage{
 mailgun(subject, html = " ", to = NULL, bcc = NULL,
   attachments = NULL, inlines = NULL, include_footer = T,
-  is_final = TRUE, ...)
+  is_final = TRUE, cleanup_outlook = TRUE, ...)
 }
 \arguments{
 \item{subject}{a}
@@ -24,6 +24,8 @@ mailgun(subject, html = " ", to = NULL, bcc = NULL,
 \item{include_footer}{a}
 
 \item{is_final}{Is this a final or preliminary email?}
+
+\item{cleanup_outlook}{Do we need to clean up problems with outlook?}
 
 \item{...}{a}
 }

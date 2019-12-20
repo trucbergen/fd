@@ -3,11 +3,11 @@
 \name{update_airquality}
 \alias{update_airquality}
 \title{update_airquality
-Updates the weather db tables}
+Updates the airquality db tables}
 \usage{
 update_airquality()
 }
 \description{
 update_airquality
-Updates the weather db tables
+Updates the airquality db tables
 }

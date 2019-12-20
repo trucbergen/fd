@@ -85,8 +85,42 @@ d <- as.data.frame(lapply(d, unlist))
 d <- data.table::dcast(d, date + municipality + stasjon ~ components, value.var = "value",fun = max)
 d$date <- ymd_hms(d$date)
 ################################# Merge two filen sammen ################################################################################
+library(DBI)
+library(RMySQL)
+library(R6)
 
+field_types <- c(
+  "date" = "DATE",
+  "location_code" = "TEXT",
+  "pm10_min" = "DOUBLE",
+  "pm10_mean" = "DOUBLE",
+  "pm10_max" = "DOUBLE"
+)
 
+keys <- c(
+  "location_code",
+  "date"
+)
+#### spørsmål her ############################################################
+config$db_config <- list(
+  driver = Sys.getenv("DB_DRIVER", "MySQL"),
+  server = Sys.getenv("DB_SERVER", "db"),
+  port = as.integer(Sys.getenv("DB_PORT", 3306)),
+  user = Sys.getenv("DB_USER", "root"),
+  password = Sys.getenv("DB_PASSWORD", "example"),
+  db = Sys.getenv("DB_DB", "sykdomspuls")
+)
+
+airquality <- schema$new(
+  db_config = config$db_config,
+  db_table = glue::glue("airquality"),
+  db_field_types = field_types,
+  db_load_folder = "/xtmp/",
+  keys = keys,
+  check_fields_match = TRUE
+)
+
+airquality$db_connect()
 
 
 
