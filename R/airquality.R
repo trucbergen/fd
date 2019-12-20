@@ -1,6 +1,6 @@
 airquality_download_dates <- function(date_start, date_end) {
-  # url <- glue::glue("https://api.nilu.no/stats/day/{date_start}/{date_end}/manglerud?components=pm10")
-  url <- glue::glue("https://api.nilu.no/obs/historical/{date_start}%2000:00/{date_end}%2023:00/alnabru?components=pm10")
+  url <- glue::glue("https://api.nilu.no/stats/day/{date_start}/{date_end}/manglerud?components=pm10")
+  #url <- glue::glue("https://api.nilu.no/obs/historical/{date_start}%2000:00/{date_end}%2023:00/alnabru?components=pm10")
   content <- httr::GET(url)
   json <- httr::content(content, as = "parsed")
   d <- lapply(json[[1]]$values, function(x) {
@@ -60,7 +60,7 @@ update_airquality <- function() {
   val <- val$last_date
 
   # figure out which dates need to be downloaded
-  download_dates <- seq.Date(as.Date("2010-01-01"), lubridate::today(), 1)
+  download_dates <- seq.Date(as.Date("2010-01-01"), lubridate::today()-1, 1)
   if (!is.na(val)) download_dates <- download_dates[download_dates > val]
 
   if (length(download_dates) == 0) {
@@ -86,7 +86,9 @@ update_airquality <- function() {
         date_end = date_end
       ),
       TRUE
-    )
+    )400 Bad Request — httpstatuses.com
+    httpstatuses.com
+    HTTP Status Code 400: The server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing).
   }
 
   res <- rbindlist(res)
